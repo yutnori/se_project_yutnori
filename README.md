@@ -1,2 +1,2 @@
 # se_project_yutnori
-CAU 2019. software-engineering yutnori project
+CAU 2019. Software-Engineering Team Project
