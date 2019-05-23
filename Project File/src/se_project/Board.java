@@ -2,8 +2,8 @@ package se_project;
 
 public class Board {
     /* 보드판 */
-    Square[] normalSquares = new NormalSquare[26];
-    Square[] intersectionSquare = new IntersectionSquare[3];
+    // Square[] normalSquares = new NormalSquare[26];
+    // Square[] intersectionSquare = new IntersectionSquare[3];
 
     void movePiece() {
         /* 말을 움직이는 메소드 */
