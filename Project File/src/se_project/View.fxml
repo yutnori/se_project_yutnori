@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -9,7 +13,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Line?>
 
-<SplitPane dividerPositions="0.7160919540229885" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="649.0" prefWidth="864.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se_project.View">
+<SplitPane dividerPositions="0.7160919540229885" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="649.0" prefWidth="864.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se_project.Controller">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="356.0">
          <children>
@@ -205,9 +209,11 @@
             <Button fx:id="rollYut" layoutX="79.0" layoutY="190.0" mnemonicParsing="false" onAction="#rollYutButtonClicked" text="윷 던지기" />
             <ListView fx:id="yutList" layoutX="28.0" layoutY="234.0" prefHeight="182.0" prefWidth="200.0" />
             <Label fx:id="showInfo" layoutX="39.0" layoutY="158.0" text="윷을 던지려면 말을 클릭하세요" />
-            <Label layoutX="68.0" layoutY="432.0" text="말의 개수:" />
-            <Label fx:id="pieceNum" layoutX="160.0" layoutY="432.0" text="3개" />
+            <Label layoutX="28.0" layoutY="432.0" text="보드 위 말의 개수" />
+            <Label fx:id="pieceNumOnBoard" layoutX="160.0" layoutY="432.0" text="0" />
             <Label fx:id="showPlayerTurn" layoutX="41.0" layoutY="109.0" text="플레이어 순서 안내하는거" />
+            <Label layoutX="28.0" layoutY="451.0" text="남은 말의 개수" />
+            <Label fx:id="pieceNumRemaining" layoutX="160.0" layoutY="451.0" text="0" />
          </children></AnchorPane>
   </items>
 </SplitPane>
