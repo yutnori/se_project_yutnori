@@ -5,7 +5,7 @@ public class Square {
     /* 보드판에서 블록들 */
     // public int pieces;
     ArrayList<Piece> pieces;
-    public boolean intersection;
+    boolean intersection;
 
     Square(){
         pieces = new ArrayList<>();

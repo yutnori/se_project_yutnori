@@ -17,6 +17,7 @@ public class Board {
     }
 
     void addPiece(int position, Piece piece){   // 유저가 갖고 있는 Piece의 인스턴스를 여기다가도 reference
+        System.out.println("sefsefsef");
         squares[position].pieces.add(piece);
     }
 

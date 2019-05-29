@@ -440,7 +440,6 @@ public class Controller implements Initializable {
             }
             else {
                 /* 정상적으로 진행될 때 */
-                yutnoriModel.startGame(tempPlayerNum, tempPieceNum);    // 모델을 초기화
                 playerNumInput.setDisable(true);
                 pieceNumInput.setDisable(true);
                 startGame.setDisable(true);
@@ -452,11 +451,9 @@ public class Controller implements Initializable {
                 pieceNumRemaining.setText(Integer.toString(tempPieceNum * tempPlayerNum));
                 yutList.setItems(yutListElement);
 
-                squaresView[1][1].setVisible(true);               // 첫번째 square를 보이게 설정하고
+                squaresView[1][1].setVisible(true);                     // 첫번째 square를 View에 보이게 설정하고
 
-                yutnoriModel.playingPlayer.get(0).pieces.get(0).onBoard = true; // 첫번째 플레이어의 첫번쩌 piece가 board 위에 있게 설정
-                Piece p = yutnoriModel.playingPlayer.get(0).pieces.get(0);
-                yutnoriModel.board.addPiece(1, yutnoriModel.playingPlayer.get(0).pieces.get(0));
+                yutnoriModel.startGame(tempPlayerNum, tempPieceNum);    // 모델을 초기화
             }
 
 

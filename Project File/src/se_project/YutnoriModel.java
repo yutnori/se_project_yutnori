@@ -8,7 +8,7 @@ public class YutnoriModel{
     public int playerNum;
     public ArrayList<Player> playingPlayer;
     public Yut[] yuts = new Yut[4];	// 빽도 일 때를 다시 생각해보자...
-    public Board board = new Board();
+    public Board board;
 
     public ArrayList<ArrayList<Square>> squaresModel = new ArrayList<>();
 
@@ -31,24 +31,21 @@ public class YutnoriModel{
         return yutResult;
     }
     void startGame(int playerNum, int pieceNum) {
+        this.playerNum = playerNum;         // 모델에다 플레이어, 말의 수 설정
+        this.pieceNum = pieceNum;
+
         /* 게임 시작 */
         System.out.println("startGame 실행");
         playingPlayer = new ArrayList<>();
+        this.board = new Board();
+
         for(int i = 0; i < playerNum; i++) {
-            playingPlayer.add(new Player());                         // 플레이어 수만큼 arraylist 공간 할당
+            playingPlayer.add(new Player(pieceNum));                         // 플레이어 수만큼 arraylist 공간 할당
         }
 
-        for(int i = 0; i < playerNum; i++){
-            playingPlayer.get(i).pieces = new ArrayList<>();         // 말 수만큼 arraylist 공간 할당
+        board.addPiece(1, new Piece(1));
+        playingPlayer.get(0).addPieceOnBoard();
 
-            // 모든 말들은 보드에 존재하지 않게 초기화 + 모든 말들이 어떤 플레이어 소유인지 초기화
-            for(int j = 0; j < pieceNum; j++){
-                playingPlayer.get(i).pieces.add(new Piece(i, false));
-            }
-        }
-
-        playerNum = playerNum;         // 모델에다 플레이어, 말의 수 설정
-        pieceNum = pieceNum;
         System.out.println("게임 시작 완료");
     }
     void startTurn(Player playerN) {
