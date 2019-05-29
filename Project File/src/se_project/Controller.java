@@ -488,6 +488,28 @@ public class Controller implements Initializable {
 
     }
 
+    @FXML
+    private void listViewSetOnMouseClicked(ActionEvent event){
+
+        System.out.println("feefsfsefsef");
+        String yutType = yutList.getSelectionModel().getSelectedItem().toString();
+        int moveDistance = 3;
+        int pieceStart = 1;
+        yutnoriModel.board.movePiece(1, 3);
+        squaresView.get(1 + 3);
+        for(int i = 0; i < (yutnoriModel.board.squares)[1].pieces; i++){ // 원래 있던 square의 circle들을 안보이게
+            squaresView.get(0).get(i).setVisible(false);
+        }
+        for(int i = 0; i < (yutnoriModel.board.squares)[1 + 3].pieces; i++){ // 도착 square의 circle들을 보이게
+            squaresView.get(1 + 3 - 1).get(i).setVisible(true);
+        }
+    }
+
+    @FXML
+    private void rgergdrgdr(ActionEvent event){
+
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         for(int i = 0; i < 29; i++){
