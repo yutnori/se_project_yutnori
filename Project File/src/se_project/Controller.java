@@ -19,7 +19,7 @@ public class Controller implements Initializable {
     private YutnoriModel yutnoriModel = new YutnoriModel();
     private Alert alert;
 
-    ArrayList<ArrayList<Circle>> squaresView = new ArrayList<>();
+    Circle[][] squaresView;
     //public Main view;                     // 현재 필요 없다고 판단됨 -성현-
 
     /**
@@ -440,7 +440,7 @@ public class Controller implements Initializable {
             }
             else {
                 /* 정상적으로 진행될 때 */
-                yutnoriModel.startGame(tempPlayerNum, tempPieceNum);
+                yutnoriModel.startGame(tempPlayerNum, tempPieceNum);    // 모델을 초기화
                 playerNumInput.setDisable(true);
                 pieceNumInput.setDisable(true);
                 startGame.setDisable(true);
@@ -452,16 +452,11 @@ public class Controller implements Initializable {
                 pieceNumRemaining.setText(Integer.toString(tempPieceNum * tempPlayerNum));
                 yutList.setItems(yutListElement);
 
-                squaresView.get(0).get(0).setVisible(true);       // 첫번째 square를 보이게 설정하고
-                yutnoriModel.playerNum = tempPlayerNum;           // 모델에다 플레이어, 말의 수 설정
-                yutnoriModel.pieceNum = tempPieceNum;
-                for(int i = 0; i < tempPlayerNum; i++){
-                    yutnoriModel.playingPlayer.add(new Player()); // 모델에다 플레이어 수만큼 new
-                }
-                for(int i = 0; i < tempPieceNum; i++){            // 모델에다 플레이서 말의 수만큼 new
+                squaresView[1][1].setVisible(true);               // 첫번째 square를 보이게 설정하고
 
-                }
-                (yutnoriModel.board.squares)[1].pieces = 1;
+                yutnoriModel.playingPlayer.get(0).pieces.get(0).onBoard = true; // 첫번째 플레이어의 첫번쩌 piece가 board 위에 있게 설정
+                Piece p = yutnoriModel.playingPlayer.get(0).pieces.get(0);
+                yutnoriModel.board.addPiece(1, yutnoriModel.playingPlayer.get(0).pieces.get(0));
             }
 
 
@@ -496,13 +491,13 @@ public class Controller implements Initializable {
         String yutType = yutList.getSelectionModel().getSelectedItem().toString();
         int moveDistance = 3;
         int pieceStart = 1;
-        squaresView.get(1 + 3);
-        for(int i = 0; i < (yutnoriModel.board.squares)[1].pieces; i++){ // 원래 있던 square의 circle들을 안보이게
-            squaresView.get(0).get(i).setVisible(false);
+        // squaresView.get(1 + 3);
+        for(int i = 1; i <= (yutnoriModel.board.squares)[1].pieces.size(); i++){ // 원래 있던 square의 circle들을 안보이게
+            squaresView[1][i].setVisible(false);
         }
         yutnoriModel.board.movePiece(1, 3);
-        for(int i = 0; i < (yutnoriModel.board.squares)[1 + 3].pieces; i++){ // 도착 square의 circle들을 보이게
-            squaresView.get(1 + 3).get(i).setVisible(true);
+        for(int i = 1; i <= (yutnoriModel.board.squares)[1 + 3].pieces.size(); i++){ // 도착 square의 circle들을 보이게
+            squaresView[1 + 3][i].setVisible(true);
         }
     }
 
@@ -513,218 +508,158 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        for(int i = 0; i < 29; i++){
-            squaresView.add(new ArrayList<Circle>());
-            for(int j = 0; j < 5; j++){
-                if(i == 0){
-                    squaresView.get(i).add(square1_1);
-                    squaresView.get(i).add(square1_2);
-                    squaresView.get(i).add(square1_3);
-                    squaresView.get(i).add(square1_4);
-                    squaresView.get(i).add(square1_5);
-                }
-                else if(i == 1){
-                    squaresView.get(i).add(square2_1);
-                    squaresView.get(i).add(square2_2);
-                    squaresView.get(i).add(square2_3);
-                    squaresView.get(i).add(square2_4);
-                    squaresView.get(i).add(square2_5);
-                }
-                else if(i == 2){
-                    squaresView.get(i).add(square3_1);
-                    squaresView.get(i).add(square3_2);
-                    squaresView.get(i).add(square3_3);
-                    squaresView.get(i).add(square3_4);
-                    squaresView.get(i).add(square3_5);
-                }
-                else if(i == 3){
-                    squaresView.get(i).add(square4_1);
-                    squaresView.get(i).add(square4_2);
-                    squaresView.get(i).add(square4_3);
-                    squaresView.get(i).add(square4_4);
-                    squaresView.get(i).add(square4_5);
-                }
-                else if(i == 4){
-                    squaresView.get(i).add(square5_1);
-                    squaresView.get(i).add(square5_2);
-                    squaresView.get(i).add(square5_3);
-                    squaresView.get(i).add(square5_4);
-                    squaresView.get(i).add(square5_5);
-                }
-                else if(i == 5){
-                    squaresView.get(i).add(square6_1);
-                    squaresView.get(i).add(square6_2);
-                    squaresView.get(i).add(square6_3);
-                    squaresView.get(i).add(square6_4);
-                    squaresView.get(i).add(square6_5);
-                }
-                else if(i == 6){
-                    squaresView.get(i).add(square7_1);
-                    squaresView.get(i).add(square7_2);
-                    squaresView.get(i).add(square7_3);
-                    squaresView.get(i).add(square7_4);
-                    squaresView.get(i).add(square7_5);
-                }
-                else if(i == 7){
-                    squaresView.get(i).add(square8_1);
-                    squaresView.get(i).add(square8_2);
-                    squaresView.get(i).add(square8_3);
-                    squaresView.get(i).add(square8_4);
-                    squaresView.get(i).add(square8_5);
-                }
-                else if(i == 8){
-                    squaresView.get(i).add(square9_1);
-                    squaresView.get(i).add(square9_2);
-                    squaresView.get(i).add(square9_3);
-                    squaresView.get(i).add(square9_4);
-                    squaresView.get(i).add(square9_5);
-                }
-                else if(i == 9){
-                    squaresView.get(i).add(square10_1);
-                    squaresView.get(i).add(square10_2);
-                    squaresView.get(i).add(square10_3);
-                    squaresView.get(i).add(square10_4);
-                    squaresView.get(i).add(square10_5);
-                }
-                else if(i == 10){
-                    squaresView.get(i).add(square11_1);
-                    squaresView.get(i).add(square11_2);
-                    squaresView.get(i).add(square11_3);
-                    squaresView.get(i).add(square11_4);
-                    squaresView.get(i).add(square11_5);
-                }
-                else if(i == 11){
-                    squaresView.get(i).add(square12_1);
-                    squaresView.get(i).add(square12_2);
-                    squaresView.get(i).add(square12_3);
-                    squaresView.get(i).add(square12_4);
-                    squaresView.get(i).add(square12_5);
-                }
-                else if(i == 12){
-                    squaresView.get(i).add(square13_1);
-                    squaresView.get(i).add(square13_2);
-                    squaresView.get(i).add(square13_3);
-                    squaresView.get(i).add(square13_4);
-                    squaresView.get(i).add(square13_5);
-                }
-                else if(i == 13){
-                    squaresView.get(i).add(square14_1);
-                    squaresView.get(i).add(square14_2);
-                    squaresView.get(i).add(square14_3);
-                    squaresView.get(i).add(square14_4);
-                    squaresView.get(i).add(square14_5);
-                }
-                else if(i == 14){
-                    squaresView.get(i).add(square15_1);
-                    squaresView.get(i).add(square15_2);
-                    squaresView.get(i).add(square15_3);
-                    squaresView.get(i).add(square15_4);
-                    squaresView.get(i).add(square15_5);
-                }
-                else if(i == 15){
-                    squaresView.get(i).add(square16_1);
-                    squaresView.get(i).add(square16_2);
-                    squaresView.get(i).add(square16_3);
-                    squaresView.get(i).add(square16_4);
-                    squaresView.get(i).add(square16_5);
-                }
-                else if(i == 16){
-                    squaresView.get(i).add(square17_1);
-                    squaresView.get(i).add(square17_2);
-                    squaresView.get(i).add(square17_3);
-                    squaresView.get(i).add(square17_4);
-                    squaresView.get(i).add(square17_5);
-                }
-                else if(i == 17){
-                    squaresView.get(i).add(square18_1);
-                    squaresView.get(i).add(square18_2);
-                    squaresView.get(i).add(square18_3);
-                    squaresView.get(i).add(square18_4);
-                    squaresView.get(i).add(square18_5);
-                }
-                else if(i == 18){
-                    squaresView.get(i).add(square19_1);
-                    squaresView.get(i).add(square19_2);
-                    squaresView.get(i).add(square19_3);
-                    squaresView.get(i).add(square19_4);
-                    squaresView.get(i).add(square19_5);
-                }
-                else if(i == 19){
-                    squaresView.get(i).add(square20_1);
-                    squaresView.get(i).add(square20_2);
-                    squaresView.get(i).add(square20_3);
-                    squaresView.get(i).add(square20_4);
-                    squaresView.get(i).add(square20_5);
-                }
-                else if(i == 20){
-                    squaresView.get(i).add(square21_1);
-                    squaresView.get(i).add(square21_2);
-                    squaresView.get(i).add(square21_3);
-                    squaresView.get(i).add(square21_4);
-                    squaresView.get(i).add(square21_5);
-                }
-                else if(i == 21){
-                    squaresView.get(i).add(square22_1);
-                    squaresView.get(i).add(square22_2);
-                    squaresView.get(i).add(square22_3);
-                    squaresView.get(i).add(square22_4);
-                    squaresView.get(i).add(square22_5);
-                }
-                else if(i == 22){
-                    squaresView.get(i).add(square23_1);
-                    squaresView.get(i).add(square23_2);
-                    squaresView.get(i).add(square23_3);
-                    squaresView.get(i).add(square23_4);
-                    squaresView.get(i).add(square23_5);
-                }
-                else if(i == 23){
-                    squaresView.get(i).add(square24_1);
-                    squaresView.get(i).add(square24_2);
-                    squaresView.get(i).add(square24_3);
-                    squaresView.get(i).add(square24_4);
-                    squaresView.get(i).add(square24_5);
-                }
-                else if(i == 24){
-                    squaresView.get(i).add(square25_1);
-                    squaresView.get(i).add(square25_2);
-                    squaresView.get(i).add(square25_3);
-                    squaresView.get(i).add(square25_4);
-                    squaresView.get(i).add(square25_5);
-                }
-                else if(i == 25){
-                    squaresView.get(i).add(square26_1);
-                    squaresView.get(i).add(square26_2);
-                    squaresView.get(i).add(square26_3);
-                    squaresView.get(i).add(square26_4);
-                    squaresView.get(i).add(square26_5);
-                }
-                else if(i == 26){
-                    squaresView.get(i).add(square27_1);
-                    squaresView.get(i).add(square27_2);
-                    squaresView.get(i).add(square27_3);
-                    squaresView.get(i).add(square27_4);
-                    squaresView.get(i).add(square27_5);
-                }
-                else if(i == 27){
-                    squaresView.get(i).add(square28_1);
-                    squaresView.get(i).add(square28_2);
-                    squaresView.get(i).add(square28_3);
-                    squaresView.get(i).add(square28_4);
-                    squaresView.get(i).add(square28_5);
-                }
-                else if(i == 28){
-                    squaresView.get(i).add(square29_1);
-                    squaresView.get(i).add(square29_2);
-                    squaresView.get(i).add(square29_3);
-                    squaresView.get(i).add(square29_4);
-                    squaresView.get(i).add(square29_5);
-                }
-            }
-        }
-        for(int i = 0; i < 29; i++){
-            for(int j = 0; j < 5; j++){
-                squaresView.get(i).get(j).setVisible(false);
-                // yutnoriModel.squaresModel.get(0).get(0).inPiece =
+
+        squaresView = new Circle[30][6];
+
+        squaresView[1][1] = (square1_1); // 윷 자료구조에 집어넣기
+        squaresView[1][2] = (square1_2);
+        squaresView[1][3] = (square1_3);
+        squaresView[1][4] = (square1_4);
+        squaresView[1][5] = (square1_5);
+        squaresView[2][1] = (square2_1);
+        squaresView[2][2] = (square2_2);
+        squaresView[2][3] = (square2_3);
+        squaresView[2][4] = (square2_4);
+        squaresView[2][5] = (square2_5);
+        squaresView[3][1] = (square3_1);
+        squaresView[3][2] = (square3_2);
+        squaresView[3][3] = (square3_3);
+        squaresView[3][4] = (square3_4);
+        squaresView[3][5] = (square3_5);
+        squaresView[4][1] = (square4_1);
+        squaresView[4][2] = (square4_2);
+        squaresView[4][3] = (square4_3);
+        squaresView[4][4] = (square4_4);
+        squaresView[4][5] = (square4_5);
+        squaresView[5][1] = (square5_1);
+        squaresView[5][2] = (square5_2);
+        squaresView[5][3] = (square5_3);
+        squaresView[5][4] = (square5_4);
+        squaresView[5][5] = (square5_5);
+        squaresView[6][1] = (square6_1);
+        squaresView[6][2] = (square6_2);
+        squaresView[6][3] = (square6_3);
+        squaresView[6][4] = (square6_4);
+        squaresView[6][5] = (square6_5);
+        squaresView[7][1] = (square7_1);
+        squaresView[7][2] = (square7_2);
+        squaresView[7][3] = (square7_3);
+        squaresView[7][4] = (square7_4);
+        squaresView[7][5] = (square7_5);
+        squaresView[8][1] = (square8_1);
+        squaresView[8][2] = (square8_2);
+        squaresView[8][3] = (square8_3);
+        squaresView[8][4] = (square8_4);
+        squaresView[8][5] = (square8_5);
+        squaresView[9][1] = (square9_1);
+        squaresView[9][2] = (square9_2);
+        squaresView[9][3] = (square9_3);
+        squaresView[9][4] = (square9_4);
+        squaresView[9][5] = (square9_5);
+        squaresView[10][1] = (square10_1);
+        squaresView[10][2] = (square10_2);
+        squaresView[10][3] = (square10_3);
+        squaresView[10][4] = (square10_4);
+        squaresView[10][5] = (square10_5);
+        squaresView[11][1] = (square11_1);
+        squaresView[11][2] = (square11_2);
+        squaresView[11][3] = (square11_3);
+        squaresView[11][4] = (square11_4);
+        squaresView[11][5] = (square11_5);
+        squaresView[12][1] = (square12_1);
+        squaresView[12][2] = (square12_2);
+        squaresView[12][3] = (square12_3);
+        squaresView[12][4] = (square12_4);
+        squaresView[12][5] = (square12_5);
+        squaresView[13][1] = (square13_1);
+        squaresView[13][2] = (square13_2);
+        squaresView[13][3] = (square13_3);
+        squaresView[13][4] = (square13_4);
+        squaresView[13][5] = (square13_5);
+        squaresView[14][1] = (square14_1);
+        squaresView[14][2] = (square14_2);
+        squaresView[14][3] = (square14_3);
+        squaresView[14][4] = (square14_4);
+        squaresView[14][5] = (square14_5);
+        squaresView[15][1] = (square15_1);
+        squaresView[15][2] = (square15_2);
+        squaresView[15][3] = (square15_3);
+        squaresView[15][4] = (square15_4);
+        squaresView[15][5] = (square15_5);
+        squaresView[16][1] = (square16_1);
+        squaresView[16][2] = (square16_2);
+        squaresView[16][3] = (square16_3);
+        squaresView[16][4] = (square16_4);
+        squaresView[16][5] = (square16_5);
+        squaresView[17][1] = (square17_1);
+        squaresView[17][2] = (square17_2);
+        squaresView[17][3] = (square17_3);
+        squaresView[17][4] = (square17_4);
+        squaresView[17][5] = (square17_5);
+        squaresView[18][1] = (square18_1);
+        squaresView[18][2] = (square18_2);
+        squaresView[18][3] = (square18_3);
+        squaresView[18][4] = (square18_4);
+        squaresView[18][5] = (square18_5);
+        squaresView[19][1] = (square19_1);
+        squaresView[19][2] = (square19_2);
+        squaresView[19][3] = (square19_3);
+        squaresView[19][4] = (square19_4);
+        squaresView[19][5] = (square19_5);
+        squaresView[20][1] = (square20_1);
+        squaresView[20][2] = (square20_2);
+        squaresView[20][3] = (square20_3);
+        squaresView[20][4] = (square20_4);
+        squaresView[20][5] = (square20_5);
+        squaresView[21][1] = (square21_1);
+        squaresView[21][2] = (square21_2);
+        squaresView[21][3] = (square21_3);
+        squaresView[21][4] = (square21_4);
+        squaresView[21][5] = (square21_5);
+        squaresView[22][1] = (square22_1);
+        squaresView[22][2] = (square22_2);
+        squaresView[22][3] = (square22_3);
+        squaresView[22][4] = (square22_4);
+        squaresView[22][5] = (square22_5);
+        squaresView[23][1] = (square23_1);
+        squaresView[23][2] = (square23_2);
+        squaresView[23][3] = (square23_3);
+        squaresView[23][4] = (square23_4);
+        squaresView[23][5] = (square23_5);
+        squaresView[24][1] = (square24_1);
+        squaresView[24][2] = (square24_2);
+        squaresView[24][3] = (square24_3);
+        squaresView[24][4] = (square24_4);
+        squaresView[24][5] = (square24_5);
+        squaresView[25][1] = (square25_1);
+        squaresView[25][2] = (square25_2);
+        squaresView[25][3] = (square25_3);
+        squaresView[25][4] = (square25_4);
+        squaresView[25][5] = (square25_5);
+        squaresView[26][1] = (square26_1);
+        squaresView[26][2] = (square26_2);
+        squaresView[26][3] = (square26_3);
+        squaresView[26][4] = (square26_4);
+        squaresView[26][5] = (square26_5);
+        squaresView[27][1] = (square27_1);
+        squaresView[27][2] = (square27_2);
+        squaresView[27][3] = (square27_3);
+        squaresView[27][4] = (square27_4);
+        squaresView[27][5] = (square27_5);
+        squaresView[28][1] = (square28_1);
+        squaresView[28][2] = (square28_2);
+        squaresView[28][3] = (square28_3);
+        squaresView[28][4] = (square28_4);
+        squaresView[28][5] = (square28_5);
+        squaresView[29][1] = (square29_1);
+        squaresView[29][2] = (square29_2);
+        squaresView[29][3] = (square29_3);
+        squaresView[29][4] = (square29_4);
+        squaresView[29][5] = (square29_5);
+
+        for(int i = 1; i <= 29; i++){       // 윷 안보이게 초기화
+            for(int j = 1; j <= 5; j++){
+                squaresView[i][j].setVisible(false);
             }
         }
     }

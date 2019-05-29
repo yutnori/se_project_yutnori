@@ -3,11 +3,12 @@ import java.util.*;
 
 public class Square {
     /* 보드판에서 블록들 */
-    public int pieces;
+    // public int pieces;
+    ArrayList<Piece> pieces;
     public boolean intersection;
 
     Square(){
-        pieces = 0;
+        pieces = new ArrayList<>();
         intersection = false;
     }
 }
