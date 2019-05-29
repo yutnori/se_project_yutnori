@@ -501,11 +501,6 @@ public class Controller implements Initializable {
         }
     }
 
-    @FXML
-    private void rgergdrgdr(ActionEvent event){
-
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
