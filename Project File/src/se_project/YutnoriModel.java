@@ -15,7 +15,9 @@ public class YutnoriModel{
     // private models;
 
     YutnoriModel(){
-
+        for(int i = 0; i < 4; i++){
+            yuts[i] = new Yut();        // yut 초기화
+        }
     }
 
     void createPlayer() {
@@ -25,11 +27,18 @@ public class YutnoriModel{
         * 필요없다고 생각됨 -성현-
         * */
     }
-    int rollYut() {
+
+    int rollYuts() {
         /* 빽도, 도, 개, 결, 윷, 모의 결과를 반환 */
-        int yutResult = 0;	// 1이면 도(만약 점이 있는 윷이면 빽도), 2면 개, 3면 걸...
+
+        int yutResult = 0;	// 1이면 도(만약 점이 있는 윷이면 빽도), 2면 개, 3면 걸..
+        for(int i = 0; i < 4; i++){
+            yutResult += yuts[i].rollYut();     // 윷을 각각 던져 윷 결과를 얻음
+        }
+        if(yuts[0].status == 1 && yutResult == 1) return 5; // yut[0]은 빽도를 나타내는 윷
         return yutResult;
     }
+
     void startGame(int playerNum, int pieceNum) {
         this.playerNum = playerNum;         // 모델에다 플레이어, 말의 수 설정
         this.pieceNum = pieceNum;
@@ -48,6 +57,32 @@ public class YutnoriModel{
 
         System.out.println("게임 시작 완료");
     }
+
+    int switchYut(String yut){
+        int distance = 0;
+        switch(yut){        // 선택한 말과 윷 목록을 통해 시작지점과 움직일 거리 초기화
+            case "빽도":
+                distance =  -1;
+                break;
+            case "도":
+                distance = 1;
+                break;
+            case "개":
+                distance = 2;
+                break;
+            case "걸":
+                distance = 3;
+                break;
+            case "윷":
+                distance = 4;
+                break;
+            case "모":
+                distance = 5;
+                break;
+        }
+        return distance;
+    }
+
     void startTurn(Player playerN) {
         /* 해당하는 플레이어의 턴을 시작하는 메소드 */
     }

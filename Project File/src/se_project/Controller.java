@@ -474,11 +474,11 @@ public class Controller implements Initializable {
     private void rollYutButtonClicked(ActionEvent event) {
 
         rollYut.setDisable(true);
-        String[] yutResultList = {"빽도","도","개","걸","윷","모"};
+        String[] yutResultList = {"모","도","개","걸","윷","빽도"};
         System.out.println(("윷 던지기 버튼 클릭"));
-        int yutResult = yutnoriModel.rollYut();
+        int yutResult = yutnoriModel.rollYuts();
         yutList.getItems().add(yutResultList[yutResult]);
-        if(yutResult == 4 | yutResult == 5) rollYut.setDisable(false);
+        if(yutResult == 0 | yutResult == 4) rollYut.setDisable(false);
 
     }
 
@@ -486,16 +486,22 @@ public class Controller implements Initializable {
     private void listViewSetOnMouseClicked(MouseEvent event){
 
         String yutType = yutList.getSelectionModel().getSelectedItem().toString();
-        int moveDistance = 3;
+        int yutindex = yutList.getSelectionModel().getSelectedIndex();      // 선택한 윷 목록
+        int moveDistance = yutnoriModel.switchYut(yutType);     // 선택한 윷 목록을 int형 움직일 거리로 return
         int pieceStart = 1;
+
         // squaresView.get(1 + 3);
         for(int i = 1; i <= (yutnoriModel.board.squares)[1].pieces.size(); i++){ // 원래 있던 square의 circle들을 안보이게
-            squaresView[1][i].setVisible(false);
+            squaresView[pieceStart][i].setVisible(false);
         }
-        yutnoriModel.board.movePiece(1, 3);
-        for(int i = 1; i <= (yutnoriModel.board.squares)[1 + 3].pieces.size(); i++){ // 도착 square의 circle들을 보이게
-            squaresView[1 + 3][i].setVisible(true);
+        if(pieceStart == 1 && moveDistance == -1) return; // 시작점에서 빽도가 나올 경우 아무 행동도 하지 않고 종료
+
+        yutnoriModel.board.movePiece(pieceStart, moveDistance);
+        for(int i = 1; i <= (yutnoriModel.board.squares)[pieceStart + moveDistance].pieces.size(); i++){ // 도착 square의 circle들을 보이게
+            squaresView[pieceStart + moveDistance][i].setVisible(true);
         }
+
+        yutList.getItems().remove(yutindex);        // 움직인 윷 목록 삭제
     }
 
     @Override
