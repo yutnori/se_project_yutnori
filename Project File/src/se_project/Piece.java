@@ -1,10 +1,11 @@
 package se_project;
 import javafx.fxml.FXML;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 import java.util.*;
 
-public class Piece {
+public class Piece implements Cloneable{
     /* 말 */
     int player; // 어떤 플레이어가 소유하고 있는지
     // boolean onBoard; // 보드판 위에 존재하는지

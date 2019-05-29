@@ -11,6 +11,7 @@ public class Square {
         pieces = new ArrayList<>();
         intersection = false;
     }
+
 }
 /*
 class NormalSquare extends Square {

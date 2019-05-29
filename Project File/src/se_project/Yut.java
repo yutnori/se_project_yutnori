@@ -8,7 +8,6 @@ public class Yut {
     public int rollYut(){
         Random random = new Random();
         status = random.nextInt(2);
-        System.out.println(status);
         return status;
     }
 }

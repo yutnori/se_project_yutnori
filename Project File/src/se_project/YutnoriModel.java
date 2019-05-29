@@ -1,31 +1,27 @@
 package se_project;
 
+import javafx.scene.paint.Color;
+
 import java.util.ArrayList;
 
 public class YutnoriModel{
     /* 시스템의 역할 */
-    public int pieceNum;
-    public int playerNum;
-    public ArrayList<Player> playingPlayer;
-    public Yut[] yuts = new Yut[4];	// 빽도 일 때를 다시 생각해보자...
-    public Board board;
+    int pieceNum;
+    int playerNum;
+    ArrayList<Player> playingPlayer;
+    Yut[] yuts = new Yut[4];	// 빽도 일 때를 다시 생각해보자...
+    Board board;
 
     public ArrayList<ArrayList<Square>> squaresModel = new ArrayList<>();
 
     // private models;
 
     YutnoriModel(){
+        playingPlayer = new ArrayList<>();
+        board = new Board(playingPlayer);
         for(int i = 0; i < 4; i++){
             yuts[i] = new Yut();        // yut 초기화
         }
-    }
-
-    void createPlayer() {
-        /* 게임을 진행할 플레이어를 정함
-        * 그러나 게임 진행을 온라인에서 하는 것이 아닌
-        * 하나의 컴퓨터에서 진행되므로
-        * 필요없다고 생각됨 -성현-
-        * */
     }
 
     int rollYuts() {
@@ -45,14 +41,12 @@ public class YutnoriModel{
 
         /* 게임 시작 */
         System.out.println("startGame 실행");
-        playingPlayer = new ArrayList<>();
-        this.board = new Board();
 
         for(int i = 0; i < playerNum; i++) {
-            playingPlayer.add(new Player(pieceNum));                         // 플레이어 수만큼 arraylist 공간 할당
+            playingPlayer.add(new Player(pieceNum, i));                         // 플레이어 수만큼 arraylist 공간 할당
         }
 
-        board.addPiece(1, new Piece(1));
+        board.addPiece(1, new Piece(0));
         playingPlayer.get(0).addPieceOnBoard();
 
         System.out.println("게임 시작 완료");
@@ -83,9 +77,32 @@ public class YutnoriModel{
         return distance;
     }
 
-    void startTurn(Player playerN) {
+    int nextTurn() {
         /* 해당하는 플레이어의 턴을 시작하는 메소드 */
+        for(int i = 0; i < playingPlayer.size(); i++){
+            if(playingPlayer.get(i).turn == true && i <  playingPlayer.size() - 1){
+                playingPlayer.get(i).turn = false;
+                playingPlayer.get(i + 1).turn = true;
+                return i + 1;
+            }
+        }
+        playingPlayer.get(playingPlayer.size() - 1).turn = false;
+        playingPlayer.get(0).turn = true;
+        return 0;
     }
+
+    int currentTurn(){
+        for(int i = 0; i < playingPlayer.size(); i++) {
+            if(playingPlayer.get(i).turn == true)
+                return i;
+        }
+        return 0;
+    }
+
+    Color currentColor(int turn){
+        return playingPlayer.get(turn).getColor();
+    }
+
     void showRanking() {
         /* 게임 랭킹을 보여주는 메소드 */
     }

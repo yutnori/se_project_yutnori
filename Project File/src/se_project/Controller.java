@@ -7,48 +7,19 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.control.Control;
 
-import javax.swing.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
     private YutnoriModel yutnoriModel;
     private Alert alert;
-
-    Circle[][] squaresView;
-    //public Main view;                     // 현재 필요 없다고 판단됨 -성현-
-
-    /**
-     * 생성자.
-     * initialize() 메서드 이전에 호출된다.
-     */
-    // 현재 필요 없다고 판단됨 -성현-
-    //public Controller(Main view, YutnoriModel yutnoriModel) {
-    //    this.yutnoriModel = yutnoriModel;
-    //    this.view = view;
-    //}
-
-    /**
-     * 컨트롤러 클래스를 초기화한다.
-     * fxml 파일이 로드되고 나서 자동으로 호출된다.
-     */
-
-    /**
-     * 참조를 다시 유지하기 위해 메인 애플리케이션이 호출한다.
-     *
-     * @param yutnoriModel
-     */
-    // 필요 없다고 판단됨 -성현-
-    //public void setView(YutnoriModel yutnoriModel) {
-    //    this.yutnoriModel = yutnoriModel;
-
-        // 테이블에 observable 리스트 데이터를 추가한다.
-        // personTable.setItems(mainApp.getPersonData());
-    //}
+    Circle[][] subSquares;
+    Circle[] mainSquares;
+    int currentSquare;
 
     @FXML
     private TextField playerNumInput;
@@ -417,7 +388,6 @@ public class Controller implements Initializable {
     @FXML
     private Circle square29_5;
 
-
     @FXML
     private void startGameButtonClicked(ActionEvent event) { // 숫자인 입력값일때
         String inputPlayerNumTextField = playerNumInput.getText();
@@ -440,23 +410,22 @@ public class Controller implements Initializable {
             }
             else {
                 /* 정상적으로 진행될 때 */
+                showPlayerTurn.setText("플레이어" + 1 + " 순서입니다.");
+                pieceNumRemaining.setText(Integer.toString(tempPieceNum * tempPlayerNum));
+                yutList.setItems(yutListElement);
+                yutnoriModel.startGame(tempPlayerNum, tempPieceNum);    // 모델을 초기화
+
+                subSquares[1][1].setVisible(true);                     // 첫번째 square를 View에 보이게 설정하고
+                subSquares[1][1].setFill(yutnoriModel.currentColor(0));
+
                 playerNumInput.setDisable(true);
                 pieceNumInput.setDisable(true);
                 startGame.setDisable(true);
-                alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Roll Yut");
-                alert.setContentText("플레이어 1 순서입니다. 윷을 던져주세요!");
-                alert.setHeaderText(null);
-                alert.show();
-                pieceNumRemaining.setText(Integer.toString(tempPieceNum * tempPlayerNum));
-                yutList.setItems(yutListElement);
+                rollYut.setDisable(false);
 
-                squaresView[1][1].setVisible(true);                     // 첫번째 square를 View에 보이게 설정하고
-
-                yutnoriModel.startGame(tempPlayerNum, tempPieceNum);    // 모델을 초기화
+                currentSquare = 1;
+                yutnoriModel.nextTurn();
             }
-
-
 
         } catch (NumberFormatException e) { // 숫자가 아닌 입력값일때
             // Alert 유효한 숫자를 입력하세요
@@ -473,194 +442,375 @@ public class Controller implements Initializable {
     @FXML
     private void rollYutButtonClicked(ActionEvent event) {
 
-        rollYut.setDisable(true);
         String[] yutResultList = {"모","도","개","걸","윷","빽도"};
         System.out.println(("윷 던지기 버튼 클릭"));
         int yutResult = yutnoriModel.rollYuts();
         yutList.getItems().add(yutResultList[yutResult]);
         if(yutResult == 0 | yutResult == 4) rollYut.setDisable(false);
 
+        rollYut.setDisable(true);
+        disableMainSquares();
+        yutList.setDisable(false);
     }
 
     @FXML
     private void listViewSetOnMouseClicked(MouseEvent event){
 
-        String yutType = yutList.getSelectionModel().getSelectedItem().toString();
-        int yutindex = yutList.getSelectionModel().getSelectedIndex();      // 선택한 윷 목록
-        int moveDistance = yutnoriModel.switchYut(yutType);     // 선택한 윷 목록을 int형 움직일 거리로 return
-        int pieceStart = 1;
+        String yutType;
+        Circle temp;
+        Color color;
+        int turn;
+        int yutindex;
+        int moveDistance;
 
-        // squaresView.get(1 + 3);
-        for(int i = 1; i <= (yutnoriModel.board.squares)[1].pieces.size(); i++){ // 원래 있던 square의 circle들을 안보이게
-            squaresView[pieceStart][i].setVisible(false);
+        try{
+            yutType = yutList.getSelectionModel().getSelectedItem().toString();
         }
-        if(pieceStart == 1 && moveDistance == -1) return; // 시작점에서 빽도가 나올 경우 아무 행동도 하지 않고 종료
+        catch(Exception e){
+            return;
+        }
 
-        yutnoriModel.board.movePiece(pieceStart, moveDistance);
-        for(int i = 1; i <= (yutnoriModel.board.squares)[pieceStart + moveDistance].pieces.size(); i++){ // 도착 square의 circle들을 보이게
-            squaresView[pieceStart + moveDistance][i].setVisible(true);
+        yutindex = yutList.getSelectionModel().getSelectedIndex();      // 선택한 윷 목록
+        moveDistance = yutnoriModel.switchYut(yutType);                 // 선택한 윷 목록을 int형 움직일 거리로 return
+        if(currentSquare == 1 && moveDistance == -1) {// 시작점에서 빽도가 나올 경우 아무 행동도 하지 않고 종료
+            yutList.getItems().remove(yutindex);        // 움직인 윷 목록 삭제
+            yutList.setDisable(true);
+            rollYut.setDisable(false);
+            enableMainSquares();
+            return;
         }
+
+        turn = yutnoriModel.currentTurn();
+        color = yutnoriModel.currentColor(turn);
+        for(int i = 1; i <= (yutnoriModel.board.squares)[currentSquare].pieces.size(); i++){ // 원래 있던 square의 circle들을 안보이게
+            subSquares[currentSquare][i].setVisible(false);
+        }
+        yutnoriModel.board.movePiece(currentSquare, moveDistance, turn);
+        for(int i = 1; i <= (yutnoriModel.board.squares)[currentSquare + moveDistance].pieces.size(); i++){ // 도착 square의 circle들을 보이게
+            temp = subSquares[currentSquare + moveDistance][i];
+            temp.setVisible(true);
+            temp.setFill(color);
+        }
+
+        turn = yutnoriModel.nextTurn();
+        boolean initialized = yutnoriModel.board.initializePiece(turn, yutnoriModel.pieceNum);
+        if(initialized == true){
+            System.out.println(turn);
+            subSquares[1][1].setFill(yutnoriModel.currentColor(turn));
+            subSquares[1][1].setVisible(true);
+        }
+
 
         yutList.getItems().remove(yutindex);        // 움직인 윷 목록 삭제
+        yutList.setDisable(true);
+        enableMainSquares();
+
+        showPlayerTurn.setText("플레이어" + (turn + 1) + " 순서입니다." +
+                "\n말을 선택후 윷을 던져주세요!");
+    }
+
+    @FXML
+    private void boardOnMouseClicked(MouseEvent event){
+        Circle circle = (Circle)event.getSource();
+        circle.setFill(Color.RED);
+        for(int i = 1; i <= 29; i++){
+            if(mainSquares[i] != circle){
+                mainSquares[i].setFill(Color.LIGHTGOLDENRODYELLOW);
+            }
+        }
+        currentSquare = getSquareIndex(circle);
+
+        int turn = yutnoriModel.currentTurn();
+        if(yutnoriModel.board.squares[currentSquare].pieces.size() == 0){
+            alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Warning");
+            alert.setContentText("해당 칸에는 소유한 말이 없습니다. 다시 선택해주세요");
+            alert.setHeaderText(null);
+            alert.show();
+            circle.setFill(Color.LIGHTGOLDENRODYELLOW);
+            return;
+        }
+        else if(yutnoriModel.board.squares[currentSquare].pieces.get(0).player != turn){
+            alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Warning");
+            alert.setContentText("해당 칸에는 소유한 말이 없습니다. 다시 선택해주세요");
+            alert.setHeaderText(null);
+            alert.show();
+            circle.setFill(Color.LIGHTGOLDENRODYELLOW);
+            return;
+        }
+
+        rollYut.setDisable(false);
+    }
+
+    int getSquareIndex(Circle circle){
+        if(circle == square1)
+            return 1;
+        else if(circle == square2)
+            return 2;
+        else if(circle == square3)
+            return 3;
+        else if(circle == square4)
+            return 4;
+        else if(circle == square5)
+            return 5;
+        else if(circle == square6)
+            return 6;
+        else if(circle == square7)
+            return 7;
+        else if(circle == square8)
+            return 8;
+        else if(circle == square9)
+            return 9;
+        else if(circle == square10)
+            return 10;
+        else if(circle == square11)
+            return 11;
+        else if(circle == square12)
+            return 12;
+        else if(circle == square13)
+            return 13;
+        else if(circle == square14)
+            return 14;
+        else if(circle == square15)
+            return 15;
+        else if(circle == square16)
+            return 16;
+        else if(circle == square17)
+            return 17;
+        else if(circle == square18)
+            return 18;
+        else if(circle == square19)
+            return 19;
+        else if(circle == square20)
+            return 20;
+        else if(circle == square21)
+            return 21;
+        else if(circle == square22)
+            return 22;
+        else if(circle == square23)
+            return 23;
+        else if(circle == square24)
+            return 24;
+        else if(circle == square25)
+            return 25;
+        else if(circle == square26)
+            return 26;
+        else if(circle == square27)
+            return 27;
+        else if(circle == square28)
+            return 28;
+        return 29;
+    }
+
+    void disableMainSquares(){
+        for(int i = 1; i <= 29; i++){
+            mainSquares[i].setDisable(true);
+            mainSquares[i].setFill(Color.LIGHTGOLDENRODYELLOW);
+        }
+    }
+
+    void enableMainSquares(){
+        for(int i = 1; i <= 29; i++){
+            mainSquares[i].setDisable(false);
+        }
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
+        yutList.setDisable(true);
+        rollYut.setDisable(true);
+
         yutnoriModel = new YutnoriModel();
 
-        squaresView = new Circle[30][6];
+        subSquares = new Circle[30][6];
+        mainSquares = new Circle[30];
 
-        squaresView[1][1] = (square1_1); // 윷 자료구조에 집어넣기
-        squaresView[1][2] = (square1_2);
-        squaresView[1][3] = (square1_3);
-        squaresView[1][4] = (square1_4);
-        squaresView[1][5] = (square1_5);
-        squaresView[2][1] = (square2_1);
-        squaresView[2][2] = (square2_2);
-        squaresView[2][3] = (square2_3);
-        squaresView[2][4] = (square2_4);
-        squaresView[2][5] = (square2_5);
-        squaresView[3][1] = (square3_1);
-        squaresView[3][2] = (square3_2);
-        squaresView[3][3] = (square3_3);
-        squaresView[3][4] = (square3_4);
-        squaresView[3][5] = (square3_5);
-        squaresView[4][1] = (square4_1);
-        squaresView[4][2] = (square4_2);
-        squaresView[4][3] = (square4_3);
-        squaresView[4][4] = (square4_4);
-        squaresView[4][5] = (square4_5);
-        squaresView[5][1] = (square5_1);
-        squaresView[5][2] = (square5_2);
-        squaresView[5][3] = (square5_3);
-        squaresView[5][4] = (square5_4);
-        squaresView[5][5] = (square5_5);
-        squaresView[6][1] = (square6_1);
-        squaresView[6][2] = (square6_2);
-        squaresView[6][3] = (square6_3);
-        squaresView[6][4] = (square6_4);
-        squaresView[6][5] = (square6_5);
-        squaresView[7][1] = (square7_1);
-        squaresView[7][2] = (square7_2);
-        squaresView[7][3] = (square7_3);
-        squaresView[7][4] = (square7_4);
-        squaresView[7][5] = (square7_5);
-        squaresView[8][1] = (square8_1);
-        squaresView[8][2] = (square8_2);
-        squaresView[8][3] = (square8_3);
-        squaresView[8][4] = (square8_4);
-        squaresView[8][5] = (square8_5);
-        squaresView[9][1] = (square9_1);
-        squaresView[9][2] = (square9_2);
-        squaresView[9][3] = (square9_3);
-        squaresView[9][4] = (square9_4);
-        squaresView[9][5] = (square9_5);
-        squaresView[10][1] = (square10_1);
-        squaresView[10][2] = (square10_2);
-        squaresView[10][3] = (square10_3);
-        squaresView[10][4] = (square10_4);
-        squaresView[10][5] = (square10_5);
-        squaresView[11][1] = (square11_1);
-        squaresView[11][2] = (square11_2);
-        squaresView[11][3] = (square11_3);
-        squaresView[11][4] = (square11_4);
-        squaresView[11][5] = (square11_5);
-        squaresView[12][1] = (square12_1);
-        squaresView[12][2] = (square12_2);
-        squaresView[12][3] = (square12_3);
-        squaresView[12][4] = (square12_4);
-        squaresView[12][5] = (square12_5);
-        squaresView[13][1] = (square13_1);
-        squaresView[13][2] = (square13_2);
-        squaresView[13][3] = (square13_3);
-        squaresView[13][4] = (square13_4);
-        squaresView[13][5] = (square13_5);
-        squaresView[14][1] = (square14_1);
-        squaresView[14][2] = (square14_2);
-        squaresView[14][3] = (square14_3);
-        squaresView[14][4] = (square14_4);
-        squaresView[14][5] = (square14_5);
-        squaresView[15][1] = (square15_1);
-        squaresView[15][2] = (square15_2);
-        squaresView[15][3] = (square15_3);
-        squaresView[15][4] = (square15_4);
-        squaresView[15][5] = (square15_5);
-        squaresView[16][1] = (square16_1);
-        squaresView[16][2] = (square16_2);
-        squaresView[16][3] = (square16_3);
-        squaresView[16][4] = (square16_4);
-        squaresView[16][5] = (square16_5);
-        squaresView[17][1] = (square17_1);
-        squaresView[17][2] = (square17_2);
-        squaresView[17][3] = (square17_3);
-        squaresView[17][4] = (square17_4);
-        squaresView[17][5] = (square17_5);
-        squaresView[18][1] = (square18_1);
-        squaresView[18][2] = (square18_2);
-        squaresView[18][3] = (square18_3);
-        squaresView[18][4] = (square18_4);
-        squaresView[18][5] = (square18_5);
-        squaresView[19][1] = (square19_1);
-        squaresView[19][2] = (square19_2);
-        squaresView[19][3] = (square19_3);
-        squaresView[19][4] = (square19_4);
-        squaresView[19][5] = (square19_5);
-        squaresView[20][1] = (square20_1);
-        squaresView[20][2] = (square20_2);
-        squaresView[20][3] = (square20_3);
-        squaresView[20][4] = (square20_4);
-        squaresView[20][5] = (square20_5);
-        squaresView[21][1] = (square21_1);
-        squaresView[21][2] = (square21_2);
-        squaresView[21][3] = (square21_3);
-        squaresView[21][4] = (square21_4);
-        squaresView[21][5] = (square21_5);
-        squaresView[22][1] = (square22_1);
-        squaresView[22][2] = (square22_2);
-        squaresView[22][3] = (square22_3);
-        squaresView[22][4] = (square22_4);
-        squaresView[22][5] = (square22_5);
-        squaresView[23][1] = (square23_1);
-        squaresView[23][2] = (square23_2);
-        squaresView[23][3] = (square23_3);
-        squaresView[23][4] = (square23_4);
-        squaresView[23][5] = (square23_5);
-        squaresView[24][1] = (square24_1);
-        squaresView[24][2] = (square24_2);
-        squaresView[24][3] = (square24_3);
-        squaresView[24][4] = (square24_4);
-        squaresView[24][5] = (square24_5);
-        squaresView[25][1] = (square25_1);
-        squaresView[25][2] = (square25_2);
-        squaresView[25][3] = (square25_3);
-        squaresView[25][4] = (square25_4);
-        squaresView[25][5] = (square25_5);
-        squaresView[26][1] = (square26_1);
-        squaresView[26][2] = (square26_2);
-        squaresView[26][3] = (square26_3);
-        squaresView[26][4] = (square26_4);
-        squaresView[26][5] = (square26_5);
-        squaresView[27][1] = (square27_1);
-        squaresView[27][2] = (square27_2);
-        squaresView[27][3] = (square27_3);
-        squaresView[27][4] = (square27_4);
-        squaresView[27][5] = (square27_5);
-        squaresView[28][1] = (square28_1);
-        squaresView[28][2] = (square28_2);
-        squaresView[28][3] = (square28_3);
-        squaresView[28][4] = (square28_4);
-        squaresView[28][5] = (square28_5);
-        squaresView[29][1] = (square29_1);
-        squaresView[29][2] = (square29_2);
-        squaresView[29][3] = (square29_3);
-        squaresView[29][4] = (square29_4);
-        squaresView[29][5] = (square29_5);
+        subSquares[1][1] = (square1_1); // 윷 자료구조에 집어넣기
+        subSquares[1][2] = (square1_2);
+        subSquares[1][3] = (square1_3);
+        subSquares[1][4] = (square1_4);
+        subSquares[1][5] = (square1_5);
+        subSquares[2][1] = (square2_1);
+        subSquares[2][2] = (square2_2);
+        subSquares[2][3] = (square2_3);
+        subSquares[2][4] = (square2_4);
+        subSquares[2][5] = (square2_5);
+        subSquares[3][1] = (square3_1);
+        subSquares[3][2] = (square3_2);
+        subSquares[3][3] = (square3_3);
+        subSquares[3][4] = (square3_4);
+        subSquares[3][5] = (square3_5);
+        subSquares[4][1] = (square4_1);
+        subSquares[4][2] = (square4_2);
+        subSquares[4][3] = (square4_3);
+        subSquares[4][4] = (square4_4);
+        subSquares[4][5] = (square4_5);
+        subSquares[5][1] = (square5_1);
+        subSquares[5][2] = (square5_2);
+        subSquares[5][3] = (square5_3);
+        subSquares[5][4] = (square5_4);
+        subSquares[5][5] = (square5_5);
+        subSquares[6][1] = (square6_1);
+        subSquares[6][2] = (square6_2);
+        subSquares[6][3] = (square6_3);
+        subSquares[6][4] = (square6_4);
+        subSquares[6][5] = (square6_5);
+        subSquares[7][1] = (square7_1);
+        subSquares[7][2] = (square7_2);
+        subSquares[7][3] = (square7_3);
+        subSquares[7][4] = (square7_4);
+        subSquares[7][5] = (square7_5);
+        subSquares[8][1] = (square8_1);
+        subSquares[8][2] = (square8_2);
+        subSquares[8][3] = (square8_3);
+        subSquares[8][4] = (square8_4);
+        subSquares[8][5] = (square8_5);
+        subSquares[9][1] = (square9_1);
+        subSquares[9][2] = (square9_2);
+        subSquares[9][3] = (square9_3);
+        subSquares[9][4] = (square9_4);
+        subSquares[9][5] = (square9_5);
+        subSquares[10][1] = (square10_1);
+        subSquares[10][2] = (square10_2);
+        subSquares[10][3] = (square10_3);
+        subSquares[10][4] = (square10_4);
+        subSquares[10][5] = (square10_5);
+        subSquares[11][1] = (square11_1);
+        subSquares[11][2] = (square11_2);
+        subSquares[11][3] = (square11_3);
+        subSquares[11][4] = (square11_4);
+        subSquares[11][5] = (square11_5);
+        subSquares[12][1] = (square12_1);
+        subSquares[12][2] = (square12_2);
+        subSquares[12][3] = (square12_3);
+        subSquares[12][4] = (square12_4);
+        subSquares[12][5] = (square12_5);
+        subSquares[13][1] = (square13_1);
+        subSquares[13][2] = (square13_2);
+        subSquares[13][3] = (square13_3);
+        subSquares[13][4] = (square13_4);
+        subSquares[13][5] = (square13_5);
+        subSquares[14][1] = (square14_1);
+        subSquares[14][2] = (square14_2);
+        subSquares[14][3] = (square14_3);
+        subSquares[14][4] = (square14_4);
+        subSquares[14][5] = (square14_5);
+        subSquares[15][1] = (square15_1);
+        subSquares[15][2] = (square15_2);
+        subSquares[15][3] = (square15_3);
+        subSquares[15][4] = (square15_4);
+        subSquares[15][5] = (square15_5);
+        subSquares[16][1] = (square16_1);
+        subSquares[16][2] = (square16_2);
+        subSquares[16][3] = (square16_3);
+        subSquares[16][4] = (square16_4);
+        subSquares[16][5] = (square16_5);
+        subSquares[17][1] = (square17_1);
+        subSquares[17][2] = (square17_2);
+        subSquares[17][3] = (square17_3);
+        subSquares[17][4] = (square17_4);
+        subSquares[17][5] = (square17_5);
+        subSquares[18][1] = (square18_1);
+        subSquares[18][2] = (square18_2);
+        subSquares[18][3] = (square18_3);
+        subSquares[18][4] = (square18_4);
+        subSquares[18][5] = (square18_5);
+        subSquares[19][1] = (square19_1);
+        subSquares[19][2] = (square19_2);
+        subSquares[19][3] = (square19_3);
+        subSquares[19][4] = (square19_4);
+        subSquares[19][5] = (square19_5);
+        subSquares[20][1] = (square20_1);
+        subSquares[20][2] = (square20_2);
+        subSquares[20][3] = (square20_3);
+        subSquares[20][4] = (square20_4);
+        subSquares[20][5] = (square20_5);
+        subSquares[21][1] = (square21_1);
+        subSquares[21][2] = (square21_2);
+        subSquares[21][3] = (square21_3);
+        subSquares[21][4] = (square21_4);
+        subSquares[21][5] = (square21_5);
+        subSquares[22][1] = (square22_1);
+        subSquares[22][2] = (square22_2);
+        subSquares[22][3] = (square22_3);
+        subSquares[22][4] = (square22_4);
+        subSquares[22][5] = (square22_5);
+        subSquares[23][1] = (square23_1);
+        subSquares[23][2] = (square23_2);
+        subSquares[23][3] = (square23_3);
+        subSquares[23][4] = (square23_4);
+        subSquares[23][5] = (square23_5);
+        subSquares[24][1] = (square24_1);
+        subSquares[24][2] = (square24_2);
+        subSquares[24][3] = (square24_3);
+        subSquares[24][4] = (square24_4);
+        subSquares[24][5] = (square24_5);
+        subSquares[25][1] = (square25_1);
+        subSquares[25][2] = (square25_2);
+        subSquares[25][3] = (square25_3);
+        subSquares[25][4] = (square25_4);
+        subSquares[25][5] = (square25_5);
+        subSquares[26][1] = (square26_1);
+        subSquares[26][2] = (square26_2);
+        subSquares[26][3] = (square26_3);
+        subSquares[26][4] = (square26_4);
+        subSquares[26][5] = (square26_5);
+        subSquares[27][1] = (square27_1);
+        subSquares[27][2] = (square27_2);
+        subSquares[27][3] = (square27_3);
+        subSquares[27][4] = (square27_4);
+        subSquares[27][5] = (square27_5);
+        subSquares[28][1] = (square28_1);
+        subSquares[28][2] = (square28_2);
+        subSquares[28][3] = (square28_3);
+        subSquares[28][4] = (square28_4);
+        subSquares[28][5] = (square28_5);
+        subSquares[29][1] = (square29_1);
+        subSquares[29][2] = (square29_2);
+        subSquares[29][3] = (square29_3);
+        subSquares[29][4] = (square29_4);
+        subSquares[29][5] = (square29_5);
+
+        mainSquares[1] = square1;
+        mainSquares[2] = square2;
+        mainSquares[3] = square3;
+        mainSquares[4] = square4;
+        mainSquares[5] = square5;
+        mainSquares[6] = square6;
+        mainSquares[7] = square7;
+        mainSquares[8] = square8;
+        mainSquares[9] = square9;
+        mainSquares[10] = square10;
+        mainSquares[11] = square11;
+        mainSquares[12] = square12;
+        mainSquares[13] = square13;
+        mainSquares[14] = square14;
+        mainSquares[15] = square15;
+        mainSquares[16] = square16;
+        mainSquares[17] = square17;
+        mainSquares[18] = square18;
+        mainSquares[19] = square19;
+        mainSquares[20] = square20;
+        mainSquares[21] = square21;
+        mainSquares[22] = square22;
+        mainSquares[23] = square23;
+        mainSquares[24] = square24;
+        mainSquares[25] = square25;
+        mainSquares[26] = square26;
+        mainSquares[27] = square27;
+        mainSquares[28] = square28;
+        mainSquares[29] = square29;
+
+
 
         for(int i = 1; i <= 29; i++){       // 윷 안보이게 초기화
             for(int j = 1; j <= 5; j++){
-                squaresView[i][j].setVisible(false);
+                subSquares[i][j].setVisible(false);
             }
+            mainSquares[i].setFill(Color.LIGHTGOLDENRODYELLOW); // 주요 칸들 색 초기화
+            mainSquares[i].setDisable(true);
         }
     }
 }
