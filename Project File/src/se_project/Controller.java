@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
 
 import javax.swing.*;
@@ -460,6 +461,7 @@ public class Controller implements Initializable {
                 for(int i = 0; i < tempPieceNum; i++){            // 모델에다 플레이서 말의 수만큼 new
 
                 }
+                (yutnoriModel.board.squares)[1].pieces = 1;
             }
 
 
@@ -489,19 +491,18 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    private void listViewSetOnMouseClicked(ActionEvent event){
+    private void listViewSetOnMouseClicked(MouseEvent event){
 
-        System.out.println("feefsfsefsef");
         String yutType = yutList.getSelectionModel().getSelectedItem().toString();
         int moveDistance = 3;
         int pieceStart = 1;
-        yutnoriModel.board.movePiece(1, 3);
         squaresView.get(1 + 3);
         for(int i = 0; i < (yutnoriModel.board.squares)[1].pieces; i++){ // 원래 있던 square의 circle들을 안보이게
             squaresView.get(0).get(i).setVisible(false);
         }
+        yutnoriModel.board.movePiece(1, 3);
         for(int i = 0; i < (yutnoriModel.board.squares)[1 + 3].pieces; i++){ // 도착 square의 circle들을 보이게
-            squaresView.get(1 + 3 - 1).get(i).setVisible(true);
+            squaresView.get(1 + 3).get(i).setVisible(true);
         }
     }
 
