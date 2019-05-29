@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
-    private YutnoriModel yutnoriModel = new YutnoriModel();
+    private YutnoriModel yutnoriModel;
     private Alert alert;
 
     Circle[][] squaresView;
@@ -500,6 +500,8 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        yutnoriModel = new YutnoriModel();
 
         squaresView = new Circle[30][6];
 
