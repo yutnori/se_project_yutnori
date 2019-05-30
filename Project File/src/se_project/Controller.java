@@ -410,7 +410,8 @@ public class Controller implements Initializable {
             }
             else {
                 /* 정상적으로 진행될 때 */
-                showPlayerTurn.setText("플레이어" + 1 + " 순서입니다.");
+                showPlayerTurn.setText("플레이어" +  1 + " 순서입니다." +
+                        "\n말을 선택후 윷을 던져주세요!");
                 pieceNumRemaining.setText(Integer.toString(tempPieceNum * tempPlayerNum));
                 yutList.setItems(yutListElement);
                 yutnoriModel.startGame(tempPlayerNum, tempPieceNum);    // 모델을 초기화
@@ -421,7 +422,7 @@ public class Controller implements Initializable {
                 playerNumInput.setDisable(true);
                 pieceNumInput.setDisable(true);
                 startGame.setDisable(true);
-                rollYut.setDisable(false);
+                enableMainSquares();
 
                 currentSquare = 1;
                 yutnoriModel.nextTurn();
@@ -485,6 +486,22 @@ public class Controller implements Initializable {
         for(int i = 1; i <= (yutnoriModel.board.squares)[currentSquare].pieces.size(); i++){ // 원래 있던 square의 circle들을 안보이게
             subSquares[currentSquare][i].setVisible(false);
         }
+        if(currentSquare == 6){
+            currentSquare = 21;
+            moveDistance--;
+        }
+        else if(currentSquare == 11){
+            currentSquare = 26;
+            moveDistance--;
+        }
+        else if(currentSquare == 23){
+            currentSquare = 29;
+            moveDistance--;
+        }
+        if(currentSquare < 20 && currentSquare + moveDistance > 20){
+            // 정상 골인
+        }
+        else if(22<=currentSquare && currentSquare<=2)
         yutnoriModel.board.movePiece(currentSquare, moveDistance, turn);
         for(int i = 1; i <= (yutnoriModel.board.squares)[currentSquare + moveDistance].pieces.size(); i++){ // 도착 square의 circle들을 보이게
             temp = subSquares[currentSquare + moveDistance][i];
@@ -495,7 +512,6 @@ public class Controller implements Initializable {
         turn = yutnoriModel.nextTurn();
         boolean initialized = yutnoriModel.board.initializePiece(turn, yutnoriModel.pieceNum);
         if(initialized == true){
-            System.out.println(turn);
             subSquares[1][1].setFill(yutnoriModel.currentColor(turn));
             subSquares[1][1].setVisible(true);
         }

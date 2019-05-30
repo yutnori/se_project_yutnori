@@ -34,7 +34,7 @@ public class Board {
         /* 말을 움직이는 메소드 */
         int size = squares[position].pieces.size();
         Piece p;
-        int deletedPlayer;
+        int deletedPlayer = -1;
         if(squares[position + moveDistance].pieces.size() > 0){
             deletedPlayer = squares[position + moveDistance].pieces.get(0).player;
             deletePieces(position + moveDistance);
@@ -48,7 +48,6 @@ public class Board {
 
     boolean initializePiece(int turn, int totalPieceNumber){
         if(players.get(turn).notOnBoardPieceNumber == totalPieceNumber || players.get(turn).onBoardPieceNumber == 0 ){
-            System.out.println("sefsefsef");
             addPiece(1, new Piece(turn));
             players.get(turn).addPieceOnBoard();
             return true;
