@@ -9,387 +9,211 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.control.Control;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
     private YutnoriModel yutnoriModel;
     private Alert alert;
+    ArrayList<Label> playerPieceStatus;
     Circle[][] subSquares;
     Circle[] mainSquares;
     int currentSquare;
+    boolean rollAgain;
 
-    @FXML
-    private TextField playerNumInput;
-    @FXML
-    private TextField pieceNumInput;
-    @FXML
-    private Button startGame;
-    @FXML
-    private Label pieceNumOnBoard;
-    @FXML
-    private Label pieceNumRemaining;
-    @FXML
-    private Button rollYut;
-    @FXML
-    private Label showPlayerTurn;
-    @FXML
-    private Label showInfo;
-    @FXML
-    private ListView yutList;
-    @FXML
-    private Circle square1;
-    @FXML
-    private Circle square1_1;
-    @FXML
-    private Circle square1_2;
-    @FXML
-    private Circle square1_3;
-    @FXML
-    private Circle square1_4;
-    @FXML
-    private Circle square1_5;
-    @FXML
-    private Circle square2;
-    @FXML
-    private Circle square2_1;
-    @FXML
-    private Circle square2_2;
-    @FXML
-    private Circle square2_3;
-    @FXML
-    private Circle square2_4;
-    @FXML
-    private Circle square2_5;
-    @FXML
-    private Circle square3;
-    @FXML
-    private Circle square3_1;
-    @FXML
-    private Circle square3_2;
-    @FXML
-    private Circle square3_3;
-    @FXML
-    private Circle square3_4;
-    @FXML
-    private Circle square3_5;
-    @FXML
-    private Circle square4;
-    @FXML
-    private Circle square4_1;
-    @FXML
-    private Circle square4_2;
-    @FXML
-    private Circle square4_3;
-    @FXML
-    private Circle square4_4;
-    @FXML
-    private Circle square4_5;
-    @FXML
-    private Circle square5;
-    @FXML
-    private Circle square5_1;
-    @FXML
-    private Circle square5_2;
-    @FXML
-    private Circle square5_3;
-    @FXML
-    private Circle square5_4;
-    @FXML
-    private Circle square5_5;
-    @FXML
-    private Circle square6;
-    @FXML
-    private Circle square6_1;
-    @FXML
-    private Circle square6_2;
-    @FXML
-    private Circle square6_3;
-    @FXML
-    private Circle square6_4;
-    @FXML
-    private Circle square6_5;
-    @FXML
-    private Circle square7;
-    @FXML
-    private Circle square7_1;
-    @FXML
-    private Circle square7_2;
-    @FXML
-    private Circle square7_3;
-    @FXML
-    private Circle square7_4;
-    @FXML
-    private Circle square7_5;
-    @FXML
-    private Circle square8;
-    @FXML
-    private Circle square8_1;
-    @FXML
-    private Circle square8_2;
-    @FXML
-    private Circle square8_3;
-    @FXML
-    private Circle square8_4;
-    @FXML
-    private Circle square8_5;
-    @FXML
-    private Circle square9;
-    @FXML
-    private Circle square9_1;
-    @FXML
-    private Circle square9_2;
-    @FXML
-    private Circle square9_3;
-    @FXML
-    private Circle square9_4;
-    @FXML
-    private Circle square9_5;
-    @FXML
-    private Circle square10;
-    @FXML
-    private Circle square10_1;
-    @FXML
-    private Circle square10_2;
-    @FXML
-    private Circle square10_3;
-    @FXML
-    private Circle square10_4;
-    @FXML
-    private Circle square10_5;
-    @FXML
-    private Circle square11;
-    @FXML
-    private Circle square11_1;
-    @FXML
-    private Circle square11_2;
-    @FXML
-    private Circle square11_3;
-    @FXML
-    private Circle square11_4;
-    @FXML
-    private Circle square11_5;
-    @FXML
-    private Circle square12;
-    @FXML
-    private Circle square12_1;
-    @FXML
-    private Circle square12_2;
-    @FXML
-    private Circle square12_3;
-    @FXML
-    private Circle square12_4;
-    @FXML
-    private Circle square12_5;
-    @FXML
-    private Circle square13;
-    @FXML
-    private Circle square13_1;
-    @FXML
-    private Circle square13_2;
-    @FXML
-    private Circle square13_3;
-    @FXML
-    private Circle square13_4;
-    @FXML
-    private Circle square13_5;
-    @FXML
-    private Circle square14;
-    @FXML
-    private Circle square14_1;
-    @FXML
-    private Circle square14_2;
-    @FXML
-    private Circle square14_3;
-    @FXML
-    private Circle square14_4;
-    @FXML
-    private Circle square14_5;
-    @FXML
-    private Circle square15;
-    @FXML
-    private Circle square15_1;
-    @FXML
-    private Circle square15_2;
-    @FXML
-    private Circle square15_3;
-    @FXML
-    private Circle square15_4;
-    @FXML
-    private Circle square15_5;
-    @FXML
-    private Circle square16;
-    @FXML
-    private Circle square16_1;
-    @FXML
-    private Circle square16_2;
-    @FXML
-    private Circle square16_3;
-    @FXML
-    private Circle square16_4;
-    @FXML
-    private Circle square16_5;
-    @FXML
-    private Circle square17;
-    @FXML
-    private Circle square17_1;
-    @FXML
-    private Circle square17_2;
-    @FXML
-    private Circle square17_3;
-    @FXML
-    private Circle square17_4;
-    @FXML
-    private Circle square17_5;
-    @FXML
-    private Circle square18;
-    @FXML
-    private Circle square18_1;
-    @FXML
-    private Circle square18_2;
-    @FXML
-    private Circle square18_3;
-    @FXML
-    private Circle square18_4;
-    @FXML
-    private Circle square18_5;
-    @FXML
-    private Circle square19;
-    @FXML
-    private Circle square19_1;
-    @FXML
-    private Circle square19_2;
-    @FXML
-    private Circle square19_3;
-    @FXML
-    private Circle square19_4;
-    @FXML
-    private Circle square19_5;
-    @FXML
-    private Circle square20;
-    @FXML
-    private Circle square20_1;
-    @FXML
-    private Circle square20_2;
-    @FXML
-    private Circle square20_3;
-    @FXML
-    private Circle square20_4;
-    @FXML
-    private Circle square20_5;
-    @FXML
-    private Circle square21;
-    @FXML
-    private Circle square21_1;
-    @FXML
-    private Circle square21_2;
-    @FXML
-    private Circle square21_3;
-    @FXML
-    private Circle square21_4;
-    @FXML
-    private Circle square21_5;
-    @FXML
-    private Circle square22;
-    @FXML
-    private Circle square22_1;
-    @FXML
-    private Circle square22_2;
-    @FXML
-    private Circle square22_3;
-    @FXML
-    private Circle square22_4;
-    @FXML
-    private Circle square22_5;
-    @FXML
-    private Circle square23;
-    @FXML
-    private Circle square23_1;
-    @FXML
-    private Circle square23_2;
-    @FXML
-    private Circle square23_3;
-    @FXML
-    private Circle square23_4;
-    @FXML
-    private Circle square23_5;
-    @FXML
-    private Circle square24;
-    @FXML
-    private Circle square24_1;
-    @FXML
-    private Circle square24_2;
-    @FXML
-    private Circle square24_3;
-    @FXML
-    private Circle square24_4;
-    @FXML
-    private Circle square24_5;
-    @FXML
-    private Circle square25;
-    @FXML
-    private Circle square25_1;
-    @FXML
-    private Circle square25_2;
-    @FXML
-    private Circle square25_3;
-    @FXML
-    private Circle square25_4;
-    @FXML
-    private Circle square25_5;
-    @FXML
-    private Circle square26;
-    @FXML
-    private Circle square26_1;
-    @FXML
-    private Circle square26_2;
-    @FXML
-    private Circle square26_3;
-    @FXML
-    private Circle square26_4;
-    @FXML
-    private Circle square26_5;
-    @FXML
-    private Circle square27;
-    @FXML
-    private Circle square27_1;
-    @FXML
-    private Circle square27_2;
-    @FXML
-    private Circle square27_3;
-    @FXML
-    private Circle square27_4;
-    @FXML
-    private Circle square27_5;
-    @FXML
-    private Circle square28;
-    @FXML
-    private Circle square28_1;
-    @FXML
-    private Circle square28_2;
-    @FXML
-    private Circle square28_3;
-    @FXML
-    private Circle square28_4;
-    @FXML
-    private Circle square28_5;
-    @FXML
-    private Circle square29;
-    @FXML
-    private Circle square29_1;
-    @FXML
-    private Circle square29_2;
-    @FXML
-    private Circle square29_3;
-    @FXML
-    private Circle square29_4;
-    @FXML
-    private Circle square29_5;
+    @FXML private TextField playerNumInput;
+    @FXML private TextField pieceNumInput;
+    @FXML private Button startGame;
+    @FXML private Button rollYut;
+    @FXML private Button newPiece;
+    @FXML private Label showPlayerTurn;
+    @FXML private Label player1PieceStatus;
+    @FXML private Label player2PieceStatus;
+    @FXML private Label player3PieceStatus;
+    @FXML private Label player4PieceStatus;
+    @FXML private ListView yutList;
+    @FXML private Circle p1Color;
+    @FXML private Circle p2Color;
+    @FXML private Circle p3Color;
+    @FXML private Circle p4Color;
+    @FXML private Circle square1;
+    @FXML private Circle square1_1;
+    @FXML private Circle square1_2;
+    @FXML private Circle square1_3;
+    @FXML private Circle square1_4;
+    @FXML private Circle square1_5;
+    @FXML private Circle square2;
+    @FXML private Circle square2_1;
+    @FXML private Circle square2_2;
+    @FXML private Circle square2_3;
+    @FXML private Circle square2_4;
+    @FXML private Circle square2_5;
+    @FXML private Circle square3;
+    @FXML private Circle square3_1;
+    @FXML private Circle square3_2;
+    @FXML private Circle square3_3;
+    @FXML private Circle square3_4;
+    @FXML private Circle square3_5;
+    @FXML private Circle square4;
+    @FXML private Circle square4_1;
+    @FXML private Circle square4_2;
+    @FXML private Circle square4_3;
+    @FXML private Circle square4_4;
+    @FXML private Circle square4_5;
+    @FXML private Circle square5;
+    @FXML private Circle square5_1;
+    @FXML private Circle square5_2;
+    @FXML private Circle square5_3;
+    @FXML private Circle square5_4;
+    @FXML private Circle square5_5;
+    @FXML private Circle square6;
+    @FXML private Circle square6_1;
+    @FXML private Circle square6_2;
+    @FXML private Circle square6_3;
+    @FXML private Circle square6_4;
+    @FXML private Circle square6_5;
+    @FXML private Circle square7;
+    @FXML private Circle square7_1;
+    @FXML private Circle square7_2;
+    @FXML private Circle square7_3;
+    @FXML private Circle square7_4;
+    @FXML private Circle square7_5;
+    @FXML private Circle square8;
+    @FXML private Circle square8_1;
+    @FXML private Circle square8_2;
+    @FXML private Circle square8_3;
+    @FXML private Circle square8_4;
+    @FXML private Circle square8_5;
+    @FXML private Circle square9;
+    @FXML private Circle square9_1;
+    @FXML private Circle square9_2;
+    @FXML private Circle square9_3;
+    @FXML private Circle square9_4;
+    @FXML private Circle square9_5;
+    @FXML private Circle square10;
+    @FXML private Circle square10_1;
+    @FXML private Circle square10_2;
+    @FXML private Circle square10_3;
+    @FXML private Circle square10_4;
+    @FXML private Circle square10_5;
+    @FXML private Circle square11;
+    @FXML private Circle square11_1;
+    @FXML private Circle square11_2;
+    @FXML private Circle square11_3;
+    @FXML private Circle square11_4;
+    @FXML private Circle square11_5;
+    @FXML private Circle square12;
+    @FXML private Circle square12_1;
+    @FXML private Circle square12_2;
+    @FXML private Circle square12_3;
+    @FXML private Circle square12_4;
+    @FXML private Circle square12_5;
+    @FXML private Circle square13;
+    @FXML private Circle square13_1;
+    @FXML private Circle square13_2;
+    @FXML private Circle square13_3;
+    @FXML private Circle square13_4;
+    @FXML private Circle square13_5;
+    @FXML private Circle square14;
+    @FXML private Circle square14_1;
+    @FXML private Circle square14_2;
+    @FXML private Circle square14_3;
+    @FXML private Circle square14_4;
+    @FXML private Circle square14_5;
+    @FXML private Circle square15;
+    @FXML private Circle square15_1;
+    @FXML private Circle square15_2;
+    @FXML private Circle square15_3;
+    @FXML private Circle square15_4;
+    @FXML private Circle square15_5;
+    @FXML private Circle square16;
+    @FXML private Circle square16_1;
+    @FXML private Circle square16_2;
+    @FXML private Circle square16_3;
+    @FXML private Circle square16_4;
+    @FXML private Circle square16_5;
+    @FXML private Circle square17;
+    @FXML private Circle square17_1;
+    @FXML private Circle square17_2;
+    @FXML private Circle square17_3;
+    @FXML private Circle square17_4;
+    @FXML private Circle square17_5;
+    @FXML private Circle square18;
+    @FXML private Circle square18_1;
+    @FXML private Circle square18_2;
+    @FXML private Circle square18_3;
+    @FXML private Circle square18_4;
+    @FXML private Circle square18_5;
+    @FXML private Circle square19;
+    @FXML private Circle square19_1;
+    @FXML private Circle square19_2;
+    @FXML private Circle square19_3;
+    @FXML private Circle square19_4;
+    @FXML private Circle square19_5;
+    @FXML private Circle square20;
+    @FXML private Circle square20_1;
+    @FXML private Circle square20_2;
+    @FXML private Circle square20_3;
+    @FXML private Circle square20_4;
+    @FXML private Circle square20_5;
+    @FXML private Circle square21;
+    @FXML private Circle square21_1;
+    @FXML private Circle square21_2;
+    @FXML private Circle square21_3;
+    @FXML private Circle square21_4;
+    @FXML private Circle square21_5;
+    @FXML private Circle square22;
+    @FXML private Circle square22_1;
+    @FXML private Circle square22_2;
+    @FXML private Circle square22_3;
+    @FXML private Circle square22_4;
+    @FXML private Circle square22_5;
+    @FXML private Circle square23;
+    @FXML private Circle square23_1;
+    @FXML private Circle square23_2;
+    @FXML private Circle square23_3;
+    @FXML private Circle square23_4;
+    @FXML private Circle square23_5;
+    @FXML private Circle square24;
+    @FXML private Circle square24_1;
+    @FXML private Circle square24_2;
+    @FXML private Circle square24_3;
+    @FXML private Circle square24_4;
+    @FXML private Circle square24_5;
+    @FXML private Circle square25;
+    @FXML private Circle square25_1;
+    @FXML private Circle square25_2;
+    @FXML private Circle square25_3;
+    @FXML private Circle square25_4;
+    @FXML private Circle square25_5;
+    @FXML private Circle square26;
+    @FXML private Circle square26_1;
+    @FXML private Circle square26_2;
+    @FXML private Circle square26_3;
+    @FXML private Circle square26_4;
+    @FXML private Circle square26_5;
+    @FXML private Circle square27;
+    @FXML private Circle square27_1;
+    @FXML private Circle square27_2;
+    @FXML private Circle square27_3;
+    @FXML private Circle square27_4;
+    @FXML private Circle square27_5;
+    @FXML private Circle square28;
+    @FXML private Circle square28_1;
+    @FXML private Circle square28_2;
+    @FXML private Circle square28_3;
+    @FXML private Circle square28_4;
+    @FXML private Circle square28_5;
+    @FXML private Circle square29;
+    @FXML private Circle square29_1;
+    @FXML private Circle square29_2;
+    @FXML private Circle square29_3;
+    @FXML private Circle square29_4;
+    @FXML private Circle square29_5;
 
-    @FXML
-    private void startGameButtonClicked(ActionEvent event) { // 숫자인 입력값일때
+    @FXML private void startGameButtonClicked(ActionEvent event) { // 숫자인 입력값일때
         String inputPlayerNumTextField = playerNumInput.getText();
         String inputPieceNumTextField = pieceNumInput.getText();
         ObservableList<String> yutListElement = FXCollections.observableArrayList();
@@ -412,12 +236,18 @@ public class Controller implements Initializable {
                 /* 정상적으로 진행될 때 */
                 showPlayerTurn.setText("플레이어" +  1 + " 순서입니다." +
                         "\n말을 선택후 윷을 던져주세요!");
-                pieceNumRemaining.setText(Integer.toString(tempPieceNum * tempPlayerNum));
                 yutList.setItems(yutListElement);
                 yutnoriModel.startGame(tempPlayerNum, tempPieceNum);    // 모델을 초기화
 
                 subSquares[1][1].setVisible(true);                     // 첫번째 square를 View에 보이게 설정하고
                 subSquares[1][1].setFill(yutnoriModel.currentColor(0));
+
+                int totalPieceNumber;
+                for(int i = 0; i < yutnoriModel.playingPlayer.size(); i++){ // 플레이어별 말 현황 출력
+                    totalPieceNumber = yutnoriModel.playingPlayer.get(i).onBoardPieceNumber + yutnoriModel.playingPlayer.get(i).notOnBoardPieceNumber;
+                    playerPieceStatus.get(i).setText("현재: " + Integer.toString(yutnoriModel.playingPlayer.get(i).onBoardPieceNumber) + " / 총: "
+                            + Integer.toString(totalPieceNumber) + " / 골인: " + Integer.toString(yutnoriModel.playingPlayer.get(i).goalInNumber));
+                }
 
                 playerNumInput.setDisable(true);
                 pieceNumInput.setDisable(true);
@@ -438,24 +268,23 @@ public class Controller implements Initializable {
             playerNumInput.setText("");
             pieceNumInput.setText("");
         }
-    }
-
-    @FXML
-    private void rollYutButtonClicked(ActionEvent event) {
+    };
+    @FXML private void rollYutButtonClicked(ActionEvent event) {
 
         String[] yutResultList = {"모","도","개","걸","윷","빽도"};
-        System.out.println(("윷 던지기 버튼 클릭"));
+        // System.out.println(("윷 던지기 버튼 클릭"));
         int yutResult = yutnoriModel.rollYuts();
         yutList.getItems().add(yutResultList[yutResult]);
-        if(yutResult == 0 | yutResult == 4) rollYut.setDisable(false);
+        if(yutResult == 0 | yutResult == 4) { // 윷이나 모이면 다시 한번 던질수 있음
+            showPlayerTurn.setText("윷이나 모가 나와 한번 더 던질수 있습니다!");
+            return;
+        }
 
         rollYut.setDisable(true);
         disableMainSquares();
         yutList.setDisable(false);
-    }
-
-    @FXML
-    private void listViewSetOnMouseClicked(MouseEvent event){
+    };
+    @FXML private void listViewSetOnMouseClicked(MouseEvent event){
 
         String yutType;
         Circle temp;
@@ -463,6 +292,7 @@ public class Controller implements Initializable {
         int turn;
         int yutindex;
         int moveDistance;
+        int nextSquare;
 
         try{
             yutType = yutList.getSelectionModel().getSelectedItem().toString();
@@ -473,60 +303,88 @@ public class Controller implements Initializable {
 
         yutindex = yutList.getSelectionModel().getSelectedIndex();      // 선택한 윷 목록
         moveDistance = yutnoriModel.switchYut(yutType);                 // 선택한 윷 목록을 int형 움직일 거리로 return
-        if(currentSquare == 1 && moveDistance == -1) {// 시작점에서 빽도가 나올 경우 아무 행동도 하지 않고 종료
-            yutList.getItems().remove(yutindex);        // 움직인 윷 목록 삭제
-            yutList.setDisable(true);
-            rollYut.setDisable(false);
-            enableMainSquares();
-            return;
-        }
+        yutList.getItems().remove(yutindex);                            // 움직인 윷 목록 삭제
 
         turn = yutnoriModel.currentTurn();
         color = yutnoriModel.currentColor(turn);
-        for(int i = 1; i <= (yutnoriModel.board.squares)[currentSquare].pieces.size(); i++){ // 원래 있던 square의 circle들을 안보이게
+        for(int i = 1; i <= (yutnoriModel.board.squares)[currentSquare].pieces.size(); i++){   // 원래 있던 square의 circle들을 안보이게
             subSquares[currentSquare][i].setVisible(false);
         }
-        if(currentSquare == 6){
-            currentSquare = 21;
-            moveDistance--;
+
+        nextSquare = yutnoriModel.board.movePiece(currentSquare, moveDistance, turn);        // piece 이동!!!!!!!!!!!!!!!!!
+
+        if(nextSquare == currentSquare){
+            for(int i = 1; i <= (yutnoriModel.board.squares)[currentSquare].pieces.size(); i++){  // 시작 지점에서 백도나오면 다시 circle들을 보이게
+                subSquares[currentSquare][i].setVisible(true);
+            }
         }
-        else if(currentSquare == 11){
-            currentSquare = 26;
-            moveDistance--;
+        else if(nextSquare == -2){                                                              // 모든 플레이어의 턴이 끝나면 게임 종료
+            int totalPieceNumber;
+            for(int i = 0; i < yutnoriModel.playingPlayer.size(); i++){ // 플레이어별 말 현황 출력
+                totalPieceNumber = yutnoriModel.playingPlayer.get(i).onBoardPieceNumber + yutnoriModel.playingPlayer.get(i).notOnBoardPieceNumber;
+                playerPieceStatus.get(i).setText("현재: " + Integer.toString(yutnoriModel.playingPlayer.get(i).onBoardPieceNumber) + " / 총: "
+                        + Integer.toString(totalPieceNumber) + " / 골인: " + Integer.toString(yutnoriModel.playingPlayer.get(i).goalInNumber));
+            }
+
+            int[] rank = new int[yutnoriModel.playerNum];
+            String rankMsg = null;
+            rankMsg = "게임이 끝났습니다. 순위는 아래와 같습니다.\n\n";
+            yutnoriModel.calcRank();
+            for(int i = 0; i < yutnoriModel.playerNum; i++){
+                rank[i] = yutnoriModel.playingPlayer.get(i).playerID;
+                rankMsg = rankMsg.concat(Integer.toString(i+1) + "등: 플레이어" + Integer.toString(rank[i]+1) + "\n");
+            }
+            showPlayerTurn.setText("");
+
+            alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Good Game");
+            alert.setContentText(rankMsg);
+            alert.setHeaderText(null);
+            alert.show();
+
+            return;
         }
-        else if(currentSquare == 23){
-            currentSquare = 29;
-            moveDistance--;
-        }
-        if(currentSquare < 20 && currentSquare + moveDistance > 20){
-            // 정상 골인
-        }
-        else if(22<=currentSquare && currentSquare<=2)
-        yutnoriModel.board.movePiece(currentSquare, moveDistance, turn);
-        for(int i = 1; i <= (yutnoriModel.board.squares)[currentSquare + moveDistance].pieces.size(); i++){ // 도착 square의 circle들을 보이게
-            temp = subSquares[currentSquare + moveDistance][i];
-            temp.setVisible(true);
-            temp.setFill(color);
+        else if(nextSquare != -1){
+            for(int i = 1; i <= (yutnoriModel.board.squares)[nextSquare].pieces.size(); i++){   // 이동 했는데 골인 안했을 경우 도착 square의 circle들을 보이게
+                temp = subSquares[nextSquare][i];                                               // 그 외 이동하고 골인했을경우 아무것도 안함
+                temp.setVisible(true);
+                temp.setFill(color);
+            }
         }
 
-        turn = yutnoriModel.nextTurn();
-        boolean initialized = yutnoriModel.board.initializePiece(turn, yutnoriModel.pieceNum);
-        if(initialized == true){
-            subSquares[1][1].setFill(yutnoriModel.currentColor(turn));
-            subSquares[1][1].setVisible(true);
+        if(yutList.getItems().size() ==  0){                                // 같은 플레이어가 여러번 이동하는 경우가 아닌 경우에는 turn 바꾸기
+            turn = yutnoriModel.nextTurn();                                                         // 다음 차례를 설정
+            if(yutnoriModel.playingPlayer.get(turn).finish == true)                                 // 다음 플레이어가 게임이 끝났으면 그 다음 플레이어로..
+                turn = yutnoriModel.nextTurn();
+
+            boolean initialized = yutnoriModel.board.initializePiece(turn);  // 다음 차례가 보드 위에 말이 하나도 없을 경우 자동으로 놓기. 이미 존재하는 말을 먹을 수 있다.
+            if(initialized == true){
+                subSquares[1][1].setFill(yutnoriModel.currentColor(turn));
+                subSquares[1][1].setVisible(true);
+            }
+            showPlayerTurn.setText("플레이어" + (turn + 1) + " 순서입니다." +
+                    "\n말을 선택후 윷을 던져주세요!");
+            rollYut.setDisable(false);
+            rollAgain = false;
         }
-
-
-        yutList.getItems().remove(yutindex);        // 움직인 윷 목록 삭제
+        else{
+            showPlayerTurn.setText("플레이어" + (turn + 1) + " 순서입니다." +
+                    "\n말을 선택후 이동 선택을 해주세요!");
+            rollYut.setDisable(true);
+            rollAgain = true;
+        }
         yutList.setDisable(true);
         enableMainSquares();
 
-        showPlayerTurn.setText("플레이어" + (turn + 1) + " 순서입니다." +
-                "\n말을 선택후 윷을 던져주세요!");
+        int totalPieceNumber;
+        for(int i = 0; i < yutnoriModel.playingPlayer.size(); i++){ // 플레이어별 말 현황 출력
+            totalPieceNumber = yutnoriModel.playingPlayer.get(i).onBoardPieceNumber + yutnoriModel.playingPlayer.get(i).notOnBoardPieceNumber;
+            playerPieceStatus.get(i).setText("현재: " + Integer.toString(yutnoriModel.playingPlayer.get(i).onBoardPieceNumber) + " / 총: "
+                    + Integer.toString(totalPieceNumber) + " / 골인: " + Integer.toString(yutnoriModel.playingPlayer.get(i).goalInNumber));
+        }
     }
 
-    @FXML
-    private void boardOnMouseClicked(MouseEvent event){
+    @FXML private void boardOnMouseClicked(MouseEvent event){
         Circle circle = (Circle)event.getSource();
         circle.setFill(Color.RED);
         for(int i = 1; i <= 29; i++){
@@ -555,8 +413,12 @@ public class Controller implements Initializable {
             circle.setFill(Color.LIGHTGOLDENRODYELLOW);
             return;
         }
-
-        rollYut.setDisable(false);
+        if(rollAgain == true) {
+            rollYut.setDisable(true);
+            yutList.setDisable(false);
+        }
+        else
+            rollYut.setDisable(false);
     }
 
     int getSquareIndex(Circle circle){
@@ -629,6 +491,7 @@ public class Controller implements Initializable {
     void enableMainSquares(){
         for(int i = 1; i <= 29; i++){
             mainSquares[i].setDisable(false);
+            mainSquares[i].setFill(Color.LIGHTGOLDENRODYELLOW);
         }
     }
 
@@ -819,7 +682,11 @@ public class Controller implements Initializable {
         mainSquares[28] = square28;
         mainSquares[29] = square29;
 
-
+        playerPieceStatus = new ArrayList<>();
+        playerPieceStatus.add(player1PieceStatus);
+        playerPieceStatus.add(player2PieceStatus);
+        playerPieceStatus.add(player3PieceStatus);
+        playerPieceStatus.add(player4PieceStatus);
 
         for(int i = 1; i <= 29; i++){       // 윷 안보이게 초기화
             for(int j = 1; j <= 5; j++){
@@ -828,5 +695,12 @@ public class Controller implements Initializable {
             mainSquares[i].setFill(Color.LIGHTGOLDENRODYELLOW); // 주요 칸들 색 초기화
             mainSquares[i].setDisable(true);
         }
+
+        p1Color.setFill(Color.ORANGE);
+        p2Color.setFill(Color.GREEN);
+        p3Color.setFill(Color.PURPLE);
+        p4Color.setFill(Color.PINK);
+
+        newPiece.setDisable(true);
     }
 }

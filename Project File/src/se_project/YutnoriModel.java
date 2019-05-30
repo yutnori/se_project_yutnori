@@ -3,6 +3,7 @@ package se_project;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class YutnoriModel{
     /* 시스템의 역할 */
@@ -22,6 +23,10 @@ public class YutnoriModel{
         for(int i = 0; i < 4; i++){
             yuts[i] = new Yut();        // yut 초기화
         }
+    }
+
+    void calcRank(){
+        Collections.sort(playingPlayer);
     }
 
     int rollYuts() {
