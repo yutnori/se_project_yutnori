@@ -9,20 +9,26 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class Controller implements Initializable {
-    private YutnoriModel yutnoriModel;
-    private Alert alert;
-    ArrayList<Label> playerPieceStatus;
-    Circle[][] subSquares;
-    Circle[] mainSquares;
-    int currentSquare;
-    boolean rollAgain;
+public class Controller implements Initializable {      // 모델과 뷰를 컨트롤하는 클래스
 
+    // 모델
+    private YutnoriSystem yutnoriSystem;                // 윷놀이 시스템(최종모델)을 나타내는 오브젝트
+
+    // 뷰 관련 오브젝트의 자료구조
+    private Alert alert;                                // 팝업창 관련 오브젝트
+    ArrayList<Label> playerPieceStatus;                 // 플레이어 현황을 나타내는 레이블의 리스트
+    Circle[][] subSquares;                              // 보드위의 칸(블록) 안의 작은 칸들을 나타내는 배열
+    Circle[] mainSquares;                               // 보드위의 칸(블록)을 나타내는 배열
+
+    // 기타
+    int currentSquare;                                  // 현재 말의 출발 위치
+    boolean rollAgain;                                  // 윷이나 모가 나와 플레이어가 다시 윷을 던지는 상태
+
+    // 뷰
     @FXML private TextField playerNumInput;
     @FXML private TextField pieceNumInput;
     @FXML private Button startGame;
@@ -213,16 +219,20 @@ public class Controller implements Initializable {
     @FXML private Circle square29_4;
     @FXML private Circle square29_5;
 
-    @FXML private void startGameButtonClicked(ActionEvent event) { // 숫자인 입력값일때
-        String inputPlayerNumTextField = playerNumInput.getText();
+    // 게임 시작 버튼을 클릭했을때
+    @FXML private void startGameButtonClicked(ActionEvent event) {
+
+        String inputPlayerNumTextField = playerNumInput.getText();  // 입력값을 읽는다
         String inputPieceNumTextField = pieceNumInput.getText();
         ObservableList<String> yutListElement = FXCollections.observableArrayList();
 
+        // 입력값에 대한 예외처리
         try {
             int tempPlayerNum = Integer.parseInt(inputPlayerNumTextField);
             int tempPieceNum = Integer.parseInt(inputPieceNumTextField);
+
+            // 플레이어 수와 말의 수의 범위를 벗어날 때
             if(tempPlayerNum < 2 || tempPlayerNum > 4 || (tempPieceNum<2 || tempPieceNum > 5)){
-                /* 플레이어 수와 말의 수의 범위를 벗어날 때 */
                 alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");
                 alert.setContentText("플레이어 수는 2에서 4 사이의 수로 입력하세요." +
@@ -232,21 +242,21 @@ public class Controller implements Initializable {
                 playerNumInput.setText("");
                 pieceNumInput.setText("");
             }
+            // 정상적으로 진행될 때
             else {
-                /* 정상적으로 진행될 때 */
                 showPlayerTurn.setText("플레이어" +  1 + " 순서입니다." +
                         "\n말을 선택후 윷을 던져주세요!");
                 yutList.setItems(yutListElement);
-                yutnoriModel.startGame(tempPlayerNum, tempPieceNum);    // 모델을 초기화
+                yutnoriSystem.startGame(tempPlayerNum, tempPieceNum);          // 모델을 초기화
 
-                subSquares[1][1].setVisible(true);                     // 첫번째 square를 View에 보이게 설정하고
-                subSquares[1][1].setFill(yutnoriModel.currentColor(0));
+                subSquares[1][1].setVisible(true);                             // 첫번째 square를 View에 보이게 설정하고
+                subSquares[1][1].setFill(yutnoriSystem.currentColor(0));
 
                 int totalPieceNumber;
-                for(int i = 0; i < yutnoriModel.playingPlayer.size(); i++){ // 플레이어별 말 현황 출력
-                    totalPieceNumber = yutnoriModel.playingPlayer.get(i).onBoardPieceNumber + yutnoriModel.playingPlayer.get(i).notOnBoardPieceNumber;
-                    playerPieceStatus.get(i).setText("현재: " + Integer.toString(yutnoriModel.playingPlayer.get(i).onBoardPieceNumber) + " / 총: "
-                            + Integer.toString(totalPieceNumber) + " / 골인: " + Integer.toString(yutnoriModel.playingPlayer.get(i).goalInNumber));
+                for(int i = 0; i < yutnoriSystem.playingPlayer.size(); i++){   // 플레이어별 말 현황 출력
+                    totalPieceNumber = yutnoriSystem.playingPlayer.get(i).onBoardPieceNumber + yutnoriSystem.playingPlayer.get(i).notOnBoardPieceNumber;
+                    playerPieceStatus.get(i).setText("현재: " + yutnoriSystem.playingPlayer.get(i).onBoardPieceNumber + " / 총: "
+                            + totalPieceNumber + " / 골인: " + yutnoriSystem.playingPlayer.get(i).goalInNumber);
                 }
 
                 playerNumInput.setDisable(true);
@@ -254,12 +264,12 @@ public class Controller implements Initializable {
                 startGame.setDisable(true);
                 enableMainSquares();
 
-                currentSquare = 1;
-                yutnoriModel.nextTurn();
+                currentSquare = 1;                                  // 출발 칸은 기본으로 시작점
+                yutnoriSystem.playingPlayer.get(0).turn = true;     // 플레이어 1이 첫번째로 시작한다
             }
-
-        } catch (NumberFormatException e) { // 숫자가 아닌 입력값일때
-            // Alert 유효한 숫자를 입력하세요
+        }
+        // 숫자가 아닌 입력값일때
+        catch (NumberFormatException e) {
             alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error");
             alert.setContentText("숫자로 다시 입력하시오");
@@ -268,14 +278,15 @@ public class Controller implements Initializable {
             playerNumInput.setText("");
             pieceNumInput.setText("");
         }
-    };
+    }
+
+    // 윷은 던지는 버튼을 클릭했을때
     @FXML private void rollYutButtonClicked(ActionEvent event) {
 
         String[] yutResultList = {"모","도","개","걸","윷","빽도"};
-        // System.out.println(("윷 던지기 버튼 클릭"));
-        int yutResult = yutnoriModel.rollYuts();
+        int yutResult = yutnoriSystem.rollYuts();
         yutList.getItems().add(yutResultList[yutResult]);
-        if(yutResult == 0 | yutResult == 4) { // 윷이나 모이면 다시 한번 던질수 있음
+        if(yutResult == 0 | yutResult == 4) {               // 윷이나 모이면 다시 한번 던질수 있음
             showPlayerTurn.setText("윷이나 모가 나와 한번 더 던질수 있습니다!");
             return;
         }
@@ -283,7 +294,9 @@ public class Controller implements Initializable {
         rollYut.setDisable(true);
         disableMainSquares();
         yutList.setDisable(false);
-    };
+    }
+
+    // 던진 윷 목록에서 윷을 선택(클릭)했을때
     @FXML private void listViewSetOnMouseClicked(MouseEvent event){
 
         String yutType;
@@ -301,42 +314,44 @@ public class Controller implements Initializable {
             return;
         }
 
-        yutindex = yutList.getSelectionModel().getSelectedIndex();      // 선택한 윷 목록
-        moveDistance = yutnoriModel.switchYut(yutType);                 // 선택한 윷 목록을 int형 움직일 거리로 return
-        yutList.getItems().remove(yutindex);                            // 움직인 윷 목록 삭제
+        yutindex = yutList.getSelectionModel().getSelectedIndex();       // 선택한 윷 목록
+        moveDistance = yutnoriSystem.switchYut(yutType);                 // 선택한 윷 목록을 int형 움직일 거리로 return
+        yutList.getItems().remove(yutindex);                             // 움직인 윷 목록 삭제
 
-        turn = yutnoriModel.currentTurn();
-        color = yutnoriModel.currentColor(turn);
-        for(int i = 1; i <= (yutnoriModel.board.squares)[currentSquare].pieces.size(); i++){   // 원래 있던 square의 circle들을 안보이게
+        turn = yutnoriSystem.currentTurn();
+        color = yutnoriSystem.currentColor(turn);
+        for(int i = 1; i <= (yutnoriSystem.board.squares)[currentSquare].pieces.size(); i++){   // 원래 있던 square의 circle들을 안보이게
             subSquares[currentSquare][i].setVisible(false);
         }
 
-        nextSquare = yutnoriModel.board.movePiece(currentSquare, moveDistance, turn);        // piece 이동!!!!!!!!!!!!!!!!!
+        nextSquare = yutnoriSystem.board.movePiece(currentSquare, moveDistance, turn);          // piece 이동!!!!!!!!!!!!!!!!!
 
+        // 시작 지점에서 백도나오면 다시 circle들을 보이게
         if(nextSquare == currentSquare){
-            for(int i = 1; i <= (yutnoriModel.board.squares)[currentSquare].pieces.size(); i++){  // 시작 지점에서 백도나오면 다시 circle들을 보이게
+            for(int i = 1; i <= (yutnoriSystem.board.squares)[currentSquare].pieces.size(); i++){
                 subSquares[currentSquare][i].setVisible(true);
             }
         }
-        else if(nextSquare == -2){                                                              // 모든 플레이어의 턴이 끝나면 게임 종료
+        // 모든 플레이어의 턴이 끝나면 게임 종료
+        else if(nextSquare == -2){
             int totalPieceNumber;
-            for(int i = 0; i < yutnoriModel.playingPlayer.size(); i++){ // 플레이어별 말 현황 출력
-                totalPieceNumber = yutnoriModel.playingPlayer.get(i).onBoardPieceNumber + yutnoriModel.playingPlayer.get(i).notOnBoardPieceNumber;
-                playerPieceStatus.get(i).setText("현재: " + Integer.toString(yutnoriModel.playingPlayer.get(i).onBoardPieceNumber) + " / 총: "
-                        + Integer.toString(totalPieceNumber) + " / 골인: " + Integer.toString(yutnoriModel.playingPlayer.get(i).goalInNumber));
+            for(int i = 0; i < yutnoriSystem.playingPlayer.size(); i++){ // 플레이어별 말 현황 출력
+                totalPieceNumber = yutnoriSystem.playingPlayer.get(i).onBoardPieceNumber + yutnoriSystem.playingPlayer.get(i).notOnBoardPieceNumber;
+                playerPieceStatus.get(i).setText("현재: " + yutnoriSystem.playingPlayer.get(i).onBoardPieceNumber + " / 총: "
+                        + totalPieceNumber + " / 골인: " + yutnoriSystem.playingPlayer.get(i).goalInNumber);
             }
 
-            int[] rank = new int[yutnoriModel.playerNum];
+            int[] rank = new int[yutnoriSystem.playerNum];
             String rankMsg = null;
             rankMsg = "게임이 끝났습니다. 순위는 아래와 같습니다.\n\n";
-            yutnoriModel.calcRank();
-            for(int i = 0; i < yutnoriModel.playerNum; i++){
-                rank[i] = yutnoriModel.playingPlayer.get(i).playerID;
-                rankMsg = rankMsg.concat(Integer.toString(i+1) + "등: 플레이어" + Integer.toString(rank[i]+1) + "\n");
+            yutnoriSystem.calcRank();                                   // 순위 계산
+            for(int i = 0; i < yutnoriSystem.playerNum; i++){
+                rank[i] = yutnoriSystem.playingPlayer.get(i).playerID;
+                rankMsg = rankMsg.concat((i + 1) + "등: 플레이어" + (rank[i] + 1) + "\n");
             }
             showPlayerTurn.setText("");
 
-            alert = new Alert(Alert.AlertType.INFORMATION);
+            alert = new Alert(Alert.AlertType.INFORMATION);             // 순위 출력
             alert.setTitle("Good Game");
             alert.setContentText(rankMsg);
             alert.setHeaderText(null);
@@ -344,58 +359,80 @@ public class Controller implements Initializable {
 
             return;
         }
+        // 이동 했는데 골인 안했을 경우 도착 square의 circle들을 보이게
         else if(nextSquare != -1){
-            for(int i = 1; i <= (yutnoriModel.board.squares)[nextSquare].pieces.size(); i++){   // 이동 했는데 골인 안했을 경우 도착 square의 circle들을 보이게
-                temp = subSquares[nextSquare][i];                                               // 그 외 이동하고 골인했을경우 아무것도 안함
+            for(int i = 1; i <= 5; i++){   // 목표 칸 일단 모두 안보이게 하고
+                temp = subSquares[nextSquare][i];
+                temp.setVisible(false);
+            }
+            for(int i = 1; i <= (yutnoriSystem.board.squares)[nextSquare].pieces.size(); i++){   // 목표 칸에 실제 존재하는 말들만 보이게 하기
+                temp = subSquares[nextSquare][i];
                 temp.setVisible(true);
                 temp.setFill(color);
             }
         }
+        // 이동하고 골인했을 경우 남아있는 yutList를 초기화
+        else {
+            yutList.getItems().clear();
+        }
 
-        if(yutList.getItems().size() ==  0){                                // 같은 플레이어가 여러번 이동하는 경우가 아닌 경우에는 turn 바꾸기
-            turn = yutnoriModel.nextTurn();                                                         // 다음 차례를 설정
-            if(yutnoriModel.playingPlayer.get(turn).finish == true)                                 // 다음 플레이어가 게임이 끝났으면 그 다음 플레이어로..
-                turn = yutnoriModel.nextTurn();
+        // 같은 플레이어가 또 윷을 던지지 않을때 turn 변경
+        if(yutList.getItems().size() ==  0){
+            turn = yutnoriSystem.nextTurn();                                               // 다음 차례를 설정
+            if(yutnoriSystem.playingPlayer.get(turn).finish == true)                       // 다음 플레이어가 게임이 끝났으면 그 다음 플레이어로..
+                turn = yutnoriSystem.nextTurn();
 
-            boolean initialized = yutnoriModel.board.initializePiece(turn);  // 다음 차례가 보드 위에 말이 하나도 없을 경우 자동으로 놓기. 이미 존재하는 말을 먹을 수 있다.
+            boolean initialized = yutnoriSystem.board.initializePiece(turn);  // 다음 차례가 보드 위에 말이 하나도 없을 경우 자동으로 놓기. 이미 존재하는 말을 먹을 수 있다.
             if(initialized == true){
-                subSquares[1][1].setFill(yutnoriModel.currentColor(turn));
+                subSquares[1][1].setFill(yutnoriSystem.currentColor(turn));
                 subSquares[1][1].setVisible(true);
+                newPiece.setDisable(true);
+            }
+            else if(yutnoriSystem.playingPlayer.get(turn).notOnBoardPieceNumber == 0){
+                newPiece.setDisable(true);
+            }
+            else {
+                newPiece.setDisable(false);
             }
             showPlayerTurn.setText("플레이어" + (turn + 1) + " 순서입니다." +
                     "\n말을 선택후 윷을 던져주세요!");
-            rollYut.setDisable(false);
             rollAgain = false;
         }
+        // 같은 플레이어가 또 윷을 던질 경우..
         else{
             showPlayerTurn.setText("플레이어" + (turn + 1) + " 순서입니다." +
                     "\n말을 선택후 이동 선택을 해주세요!");
-            rollYut.setDisable(true);
+
             rollAgain = true;
         }
+        rollYut.setDisable(true);
         yutList.setDisable(true);
         enableMainSquares();
 
         int totalPieceNumber;
-        for(int i = 0; i < yutnoriModel.playingPlayer.size(); i++){ // 플레이어별 말 현황 출력
-            totalPieceNumber = yutnoriModel.playingPlayer.get(i).onBoardPieceNumber + yutnoriModel.playingPlayer.get(i).notOnBoardPieceNumber;
-            playerPieceStatus.get(i).setText("현재: " + Integer.toString(yutnoriModel.playingPlayer.get(i).onBoardPieceNumber) + " / 총: "
-                    + Integer.toString(totalPieceNumber) + " / 골인: " + Integer.toString(yutnoriModel.playingPlayer.get(i).goalInNumber));
+        for(int i = 0; i < yutnoriSystem.playingPlayer.size(); i++){      // 플레이어별 말 현황 출력
+            totalPieceNumber = yutnoriSystem.playingPlayer.get(i).onBoardPieceNumber + yutnoriSystem.playingPlayer.get(i).notOnBoardPieceNumber;
+            playerPieceStatus.get(i).setText("현재: " + yutnoriSystem.playingPlayer.get(i).onBoardPieceNumber + " / 총: "
+                    + totalPieceNumber + " / 골인: " + yutnoriSystem.playingPlayer.get(i).goalInNumber);
         }
     }
 
+    // 보드 위에서 칸(블록)을 클릭하여 선택할 경우
     @FXML private void boardOnMouseClicked(MouseEvent event){
         Circle circle = (Circle)event.getSource();
         circle.setFill(Color.RED);
-        for(int i = 1; i <= 29; i++){
+        for(int i = 1; i <= 29; i++){                           // 모든 칸(블록)들은 기본색으로 바꾸고
             if(mainSquares[i] != circle){
                 mainSquares[i].setFill(Color.LIGHTGOLDENRODYELLOW);
             }
         }
-        currentSquare = getSquareIndex(circle);
 
-        int turn = yutnoriModel.currentTurn();
-        if(yutnoriModel.board.squares[currentSquare].pieces.size() == 0){
+        currentSquare = getSquareIndex(circle);                 // 선택한 칸의 인덱스를 받아오고
+
+        int turn = yutnoriSystem.currentTurn();                 // 현재 순서인 플레이어를 확인하고
+
+        // 선택(클릭)한 칸(블록)에 본인 소유의 말이 없을 경우 1
+        if(yutnoriSystem.board.squares[currentSquare].pieces.size() == 0){
             alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Warning");
             alert.setContentText("해당 칸에는 소유한 말이 없습니다. 다시 선택해주세요");
@@ -404,7 +441,8 @@ public class Controller implements Initializable {
             circle.setFill(Color.LIGHTGOLDENRODYELLOW);
             return;
         }
-        else if(yutnoriModel.board.squares[currentSquare].pieces.get(0).player != turn){
+        // 선택(클릭)한 칸(블록)에 본인 소유의 말이 없을 경우 2
+        else if(yutnoriSystem.board.squares[currentSquare].pieces.get(0).player != turn){
             alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Warning");
             alert.setContentText("해당 칸에는 소유한 말이 없습니다. 다시 선택해주세요");
@@ -413,14 +451,50 @@ public class Controller implements Initializable {
             circle.setFill(Color.LIGHTGOLDENRODYELLOW);
             return;
         }
+
+        // 플레이어가 윷을 다시 던질 경우
         if(rollAgain == true) {
             rollYut.setDisable(true);
             yutList.setDisable(false);
         }
-        else
+        else {
             rollYut.setDisable(false);
+        }
+        newPiece.setDisable(true);
     }
 
+    // 플레이어가 새로운 말을 내보내는 버튼을 클릭했을때
+    @FXML private void newPieceClicked(MouseEvent event){
+
+        int turn = yutnoriSystem.currentTurn();           // 현재 순서인 플레이어를 확인하고
+        System.out.println(turn);
+
+        yutnoriSystem.board.eatOrMerge(1,1, false, false, turn);   // 이미 시작칸에 존재하는 다른 플레이어의 말을 먹음
+        yutnoriSystem.board.squares[1].pieces.add(new Piece(turn));                                             // 시작칸에 새로운 말을 추가
+        yutnoriSystem.playingPlayer.get(turn).addPieceOnBoard();
+
+        Circle temp;
+        for(int i = 1; i <= (yutnoriSystem.board.squares)[1].pieces.size(); i++){  // 시작 지점의 circle들을 알맞게 색칠하고 업데이트 보이게
+            temp = subSquares[1][i];
+            temp.setVisible(true);
+            temp.setFill(yutnoriSystem.playingPlayer.get(turn).getColor());
+        }
+
+        int totalPieceNumber;
+        for(int i = 0; i < yutnoriSystem.playingPlayer.size(); i++) {              // 플레이어별 말 현황 출력
+            totalPieceNumber = yutnoriSystem.playingPlayer.get(i).onBoardPieceNumber + yutnoriSystem.playingPlayer.get(i).notOnBoardPieceNumber;
+            playerPieceStatus.get(i).setText("현재: " + yutnoriSystem.playingPlayer.get(i).onBoardPieceNumber + " / 총: "
+                    + totalPieceNumber + " / 골인: " + yutnoriSystem.playingPlayer.get(i).goalInNumber);
+        }
+
+        disableMainSquares();
+        yutList.setDisable(true);
+        newPiece.setDisable(true);
+        rollYut.setDisable(false);
+        currentSquare = 1;
+    }
+
+    // 플레이어가 보드에서 선택한 칸(블록)에 해당하는 인덱스를 리턴하는 함수
     int getSquareIndex(Circle circle){
         if(circle == square1)
             return 1;
@@ -481,6 +555,7 @@ public class Controller implements Initializable {
         return 29;
     }
 
+    // 보드 위의 모든 칸을 선택 불가능하게 변경하는 함수
     void disableMainSquares(){
         for(int i = 1; i <= 29; i++){
             mainSquares[i].setDisable(true);
@@ -488,6 +563,7 @@ public class Controller implements Initializable {
         }
     }
 
+    // 보드 위의 모든 칸을 선택 가능하게 변경하는 함수
     void enableMainSquares(){
         for(int i = 1; i <= 29; i++){
             mainSquares[i].setDisable(false);
@@ -496,17 +572,17 @@ public class Controller implements Initializable {
     }
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL url, ResourceBundle resourceBundle) {    // 뷰 요소들과 자료구조 초기화
+
+        yutnoriSystem = new YutnoriSystem();
 
         yutList.setDisable(true);
         rollYut.setDisable(true);
 
-        yutnoriModel = new YutnoriModel();
-
         subSquares = new Circle[30][6];
         mainSquares = new Circle[30];
 
-        subSquares[1][1] = (square1_1); // 윷 자료구조에 집어넣기
+        subSquares[1][1] = (square1_1);  // 보드 자료구조에 해당하는 뷰 요소 집어넣기
         subSquares[1][2] = (square1_2);
         subSquares[1][3] = (square1_3);
         subSquares[1][4] = (square1_4);
@@ -682,13 +758,13 @@ public class Controller implements Initializable {
         mainSquares[28] = square28;
         mainSquares[29] = square29;
 
-        playerPieceStatus = new ArrayList<>();
+        playerPieceStatus = new ArrayList<>();      // 플레이어 현황 레이블도 자료구조에 추가
         playerPieceStatus.add(player1PieceStatus);
         playerPieceStatus.add(player2PieceStatus);
         playerPieceStatus.add(player3PieceStatus);
         playerPieceStatus.add(player4PieceStatus);
 
-        for(int i = 1; i <= 29; i++){       // 윷 안보이게 초기화
+        for(int i = 1; i <= 29; i++){              // 보드의 모든 칸(블록)내의 세부 칸들이 안보이게 초기화
             for(int j = 1; j <= 5; j++){
                 subSquares[i][j].setVisible(false);
             }
@@ -696,7 +772,7 @@ public class Controller implements Initializable {
             mainSquares[i].setDisable(true);
         }
 
-        p1Color.setFill(Color.ORANGE);
+        p1Color.setFill(Color.ORANGE);             // 플레이어 색 지정
         p2Color.setFill(Color.GREEN);
         p3Color.setFill(Color.PURPLE);
         p4Color.setFill(Color.PINK);

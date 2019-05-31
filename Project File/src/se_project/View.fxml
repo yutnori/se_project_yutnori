@@ -9,7 +9,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Line?>
 
-<SplitPane dividerPositions="0.7160919540229885" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="649.0" prefWidth="864.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se_project.Controller">
+<SplitPane dividerPositions="0.7160919540229885" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="647.0" prefWidth="932.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se_project.Controller">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="356.0">
          <children>
@@ -194,29 +194,29 @@
             <Circle fx:id="square15_2" fill="WHITE" layoutX="68.0" layoutY="420.0" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
             <Circle fx:id="square15_3" fill="WHITE" layoutX="84.0" layoutY="432.0" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
          </children></AnchorPane>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="677.0" prefWidth="269.0">
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="647.0" prefWidth="312.0">
          <children>
             <Button fx:id="startGame" layoutX="179.0" layoutY="56.0" mnemonicParsing="false" onAction="#startGameButtonClicked" text="시작" />
             <TextField fx:id="playerNumInput" layoutX="72.0" layoutY="14.0" prefHeight="29.0" prefWidth="100.0" />
             <TextField fx:id="pieceNumInput" layoutX="72.0" layoutY="52.0" prefHeight="29.0" prefWidth="100.0" />
             <Label layoutX="27.0" layoutY="22.0" text="인원" />
             <Label layoutX="27.0" layoutY="59.0" text="말수" />
-            <Button fx:id="rollYut" layoutX="27.0" layoutY="187.0" mnemonicParsing="false" onAction="#rollYutButtonClicked" prefHeight="29.0" prefWidth="79.0" text="윷 던지기" />
-            <ListView fx:id="yutList" layoutX="13.0" layoutY="234.0" onMouseClicked="#listViewSetOnMouseClicked" prefHeight="182.0" prefWidth="215.0" />
-            <Label layoutX="28.0" layoutY="432.0" prefHeight="29.0" prefWidth="68.0" text="플레이어 1 " />
-            <Label fx:id="player1PieceStatus" layoutX="96.0" layoutY="433.0" prefHeight="29.0" prefWidth="141.0" />
-            <Label fx:id="showPlayerTurn" layoutX="28.0" layoutY="98.0" prefHeight="76.0" prefWidth="181.0" />
-            <Label layoutX="28.0" layoutY="471.0" prefHeight="29.0" prefWidth="68.0" text="플레이어 2" />
-            <Label fx:id="player2PieceStatus" layoutX="96.0" layoutY="471.0" prefHeight="29.0" prefWidth="141.0" />
-            <Label layoutX="28.0" layoutY="506.0" prefHeight="29.0" prefWidth="68.0" text="플레이어 3 " />
-            <Label fx:id="player3PieceStatus" layoutX="96.0" layoutY="506.0" prefHeight="29.0" prefWidth="141.0" />
-            <Label layoutX="28.0" layoutY="543.0" prefHeight="29.0" prefWidth="68.0" text="플레이어 4 " />
-            <Label fx:id="player4PieceStatus" layoutX="96.0" layoutY="544.0" prefHeight="29.0" prefWidth="141.0" />
+            <Button fx:id="rollYut" layoutX="27.0" layoutY="187.0" mnemonicParsing="false" onAction="#rollYutButtonClicked" prefHeight="29.0" prefWidth="86.0" text="윷 던지기" />
+            <ListView fx:id="yutList" layoutX="13.0" layoutY="234.0" onMouseClicked="#listViewSetOnMouseClicked" prefHeight="182.0" prefWidth="233.0" />
+            <Label layoutX="28.0" layoutY="432.0" prefHeight="29.0" prefWidth="74.0" text="플레이어1" />
+            <Label fx:id="player1PieceStatus" layoutX="50.0" layoutY="457.0" prefHeight="29.0" prefWidth="206.0" />
+            <Label fx:id="showPlayerTurn" layoutX="28.0" layoutY="98.0" prefHeight="76.0" prefWidth="214.0" />
+            <Label layoutX="29.0" layoutY="481.0" prefHeight="29.0" prefWidth="74.0" text="플레이어2" />
+            <Label fx:id="player2PieceStatus" layoutX="50.0" layoutY="506.0" prefHeight="29.0" prefWidth="206.0" />
+            <Label layoutX="29.0" layoutY="530.0" prefHeight="29.0" prefWidth="74.0" text="플레이어3" />
+            <Label fx:id="player3PieceStatus" layoutX="50.0" layoutY="552.0" prefHeight="29.0" prefWidth="206.0" />
+            <Label layoutX="29.0" layoutY="580.0" prefHeight="29.0" prefWidth="74.0" text="플레이어4" />
+            <Label fx:id="player4PieceStatus" layoutX="50.0" layoutY="602.0" prefHeight="29.0" prefWidth="206.0" />
             <Circle fx:id="p1Color" fill="WHITE" layoutX="18.0" layoutY="447.0" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
-            <Circle fx:id="p2Color" fill="WHITE" layoutX="18.0" layoutY="486.0" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
-            <Circle fx:id="p3Color" fill="WHITE" layoutX="18.0" layoutY="521.0" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
-            <Circle fx:id="p4Color" fill="WHITE" layoutX="18.0" layoutY="558.0" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
-            <Button fx:id="newPiece" layoutX="133.0" layoutY="187.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="86.0" text="말 출발" />
+            <Circle fx:id="p2Color" fill="WHITE" layoutX="19.0" layoutY="496.0" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
+            <Circle fx:id="p3Color" fill="WHITE" layoutX="19.0" layoutY="545.0" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
+            <Circle fx:id="p4Color" fill="WHITE" layoutX="19.0" layoutY="595.0" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
+            <Button fx:id="newPiece" layoutX="133.0" layoutY="187.0" mnemonicParsing="false" onMouseClicked="#newPieceClicked" prefHeight="29.0" prefWidth="86.0" text="말 출발" />
          </children></AnchorPane>
   </items>
 </SplitPane>
