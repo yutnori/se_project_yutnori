@@ -291,6 +291,7 @@ public class Controller implements Initializable {      // 모델과 뷰를 컨�
             return;
         }
 
+        yutnoriSystem.playingPlayer.get(yutnoriSystem.currentTurn()).eatAndRollAgain = false;
         rollYut.setDisable(true);
         disableMainSquares();
         yutList.setDisable(false);
@@ -376,38 +377,50 @@ public class Controller implements Initializable {      // 모델과 뷰를 컨�
             yutList.getItems().clear();
         }
 
+
         // 같은 플레이어가 또 윷을 던지지 않을때 turn 변경
         if(yutList.getItems().size() ==  0){
-            turn = yutnoriSystem.nextTurn();                                               // 다음 차례를 설정
-            if(yutnoriSystem.playingPlayer.get(turn).finish == true)                       // 다음 플레이어가 게임이 끝났으면 그 다음 플레이어로..
-                turn = yutnoriSystem.nextTurn();
+            if(yutnoriSystem.playingPlayer.get(turn).eatAndRollAgain == false){
+                turn = yutnoriSystem.nextTurn();                                               // 다음 차례를 설정
 
-            boolean initialized = yutnoriSystem.board.initializePiece(turn);  // 다음 차례가 보드 위에 말이 하나도 없을 경우 자동으로 놓기. 이미 존재하는 말을 먹을 수 있다.
-            if(initialized == true){
-                subSquares[1][1].setFill(yutnoriSystem.currentColor(turn));
-                subSquares[1][1].setVisible(true);
-                newPiece.setDisable(true);
+                boolean initialized = yutnoriSystem.board.initializePiece(turn);  // 다음 차례가 보드 위에 말이 하나도 없을 경우 자동으로 놓기. 이미 존재하는 말을 먹을 수 있다.
+                if(initialized == true){
+                    subSquares[1][1].setFill(yutnoriSystem.currentColor(turn));
+                    subSquares[1][1].setVisible(true);
+                    newPiece.setDisable(true);
+                }
+                else if(yutnoriSystem.playingPlayer.get(turn).notOnBoardPieceNumber == 0){
+                    newPiece.setDisable(true);
+                }
+                else {
+                    newPiece.setDisable(false);
+                }
+                showPlayerTurn.setText("플레이어" + (turn + 1) + " 순서입니다." +
+                        "\n말을 선택후 윷을 던져주세요!");
+                rollAgain = false;
+                rollYut.setDisable(true);
+                yutList.setDisable(true);
+                enableMainSquares();
             }
-            else if(yutnoriSystem.playingPlayer.get(turn).notOnBoardPieceNumber == 0){
-                newPiece.setDisable(true);
+            else{
+                showPlayerTurn.setText("플레이어" + (turn + 1) + " 순서입니다." +
+                        "\n상대 말을 먹었으니 윷을 던지세요!");
+                rollAgain = true;
+                rollYut.setDisable(false);
+                yutList.setDisable(true);
+                disableMainSquares();
+                currentSquare = nextSquare;
             }
-            else {
-                newPiece.setDisable(false);
-            }
-            showPlayerTurn.setText("플레이어" + (turn + 1) + " 순서입니다." +
-                    "\n말을 선택후 윷을 던져주세요!");
-            rollAgain = false;
         }
-        // 같은 플레이어가 또 윷을 던질 경우..
+        // 같은 플레이어가 또 윷을 던지는 경우
         else{
             showPlayerTurn.setText("플레이어" + (turn + 1) + " 순서입니다." +
                     "\n말을 선택후 이동 선택을 해주세요!");
-
             rollAgain = true;
+            rollYut.setDisable(true);
+            yutList.setDisable(true);
+            enableMainSquares();
         }
-        rollYut.setDisable(true);
-        yutList.setDisable(true);
-        enableMainSquares();
 
         int totalPieceNumber;
         for(int i = 0; i < yutnoriSystem.playingPlayer.size(); i++){      // 플레이어별 말 현황 출력
@@ -467,7 +480,6 @@ public class Controller implements Initializable {      // 모델과 뷰를 컨�
     @FXML private void newPieceClicked(MouseEvent event){
 
         int turn = yutnoriSystem.currentTurn();           // 현재 순서인 플레이어를 확인하고
-        System.out.println(turn);
 
         yutnoriSystem.board.eatOrMerge(1,1, false, false, turn);   // 이미 시작칸에 존재하는 다른 플레이어의 말을 먹음
         yutnoriSystem.board.squares[1].pieces.add(new Piece(turn));                                             // 시작칸에 새로운 말을 추가

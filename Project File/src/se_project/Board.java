@@ -6,7 +6,7 @@ public class Board {    // 보드판을 나타내는 클래스
 
     Square[] squares;             // 각각의 칸(블록)들의 배열
     ArrayList<Player> players;    // 플레이어들의 리스트
-    int finishCount;              // 플레이어들이 게임올 종류한 순서
+    int finishCount;              // 플레이어들이 게임올 종료한 순서
     int defeatCount;              // 플레이어들이 게임에 패배한 순서(골인을 못하고 말만 먹힌 교착 상태)
 
     Board(ArrayList<Player> players){
@@ -34,6 +34,7 @@ public class Board {    // 보드판을 나타내는 클래스
 
         boolean goalIn = false;
         boolean almostGoal = false;
+        boolean eatAndRollAgain = false;
         int nextSquare = -1;
 
         // 빽도 아닐때 다음 블록 계산
@@ -179,8 +180,10 @@ public class Board {    // 보드판을 나타내는 클래스
         if(currentSquare == nextSquare)     // 방금 시작점에서 생성된 말이 백도가 나오면 아무것도 안하고 리턴
             return currentSquare;
 
-        eatOrMerge(currentSquare, nextSquare, goalIn, almostGoal, turn);    // 말이 먹힌 경우 먹힌 말들을 제거
+        eatAndRollAgain = eatOrMerge(currentSquare, nextSquare, goalIn, almostGoal, turn);    // 말이 먹힌 경우 먹힌 말들을 제거
         deletePieces(currentSquare);
+        if(eatAndRollAgain)
+            players.get(turn).eatAndRollAgain = true;
 
         checkFinishedPlayers();                 // 게임 종료한 플레이어를 확인
         boolean finished = checkAllFinished();  // 모든 플레이어들이 게임 종료한지 확인
@@ -208,9 +211,10 @@ public class Board {    // 보드판을 나타내는 클래스
     }
 
     // 잡힌 말을 먹거나 아군 말을 업는 함수
-    void eatOrMerge(int currentSquare, int nextSquare, boolean goalIn, boolean almostGoal, int turn) {
+    boolean eatOrMerge(int currentSquare, int nextSquare, boolean goalIn, boolean almostGoal, int turn) {
+        boolean eatAndRollAgain = false;
         if(nextSquare == -1)                                          // 골인일때는 아무것도 안함
-            return;
+            return false;
         if(squares[nextSquare].pieces.size() > 0 && goalIn == false){ // 목표에 말들이 존재하고 골인이 아닐때
             int deletedPlayer = squares[nextSquare].pieces.get(0).player;
             if(deletedPlayer != turn){                                // 다른 플레이어의 말일 경우에만 삭제
@@ -218,6 +222,7 @@ public class Board {    // 보드판을 나타내는 클래스
                     players.get(deletedPlayer).deletePieceOnBoard();
                 }
                 deletePieces(nextSquare);
+                eatAndRollAgain = true;
             }
         }
         if (currentSquare != nextSquare && goalIn == false){                   // 새로운 말이 시작하는 경우가 아닐때
@@ -229,6 +234,7 @@ public class Board {    // 보드판을 나타내는 클래스
                 }
             }
         }
+        return eatAndRollAgain;
     }
 
     // 게임 종료한 플레이어를 확인하는 함수

@@ -11,6 +11,7 @@ public class Player implements Comparable<Player>{  // 플레이어를 나타내
     Color color;                  // 플레이어를 나타내는 색
     boolean finish;               // 게임 종료 여부
     int finishOrder;              // 게임 종료 순서
+    boolean eatAndRollAgain;
 
     Player(int pieceNumber, int player){
         playerID = player;
@@ -19,6 +20,7 @@ public class Player implements Comparable<Player>{  // 플레이어를 나타내
         goalInNumber = 0;
         turn = false;
         finish = false;
+        eatAndRollAgain = false;
         switch (player){
             case 0: color = Color.ORANGE;
                 break;
@@ -38,6 +40,7 @@ public class Player implements Comparable<Player>{  // 플레이어를 나타내
 
     void deletePieceOnBoard(){    // 보드 위에서 말을 없애기
         onBoardPieceNumber--;
+        notOnBoardPieceNumber++;
     }
 
     void addGoalInNumber(){       // 골인하기
